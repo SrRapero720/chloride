@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "me.authorname.examplemod.mixins.impl",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "${modid}.${mixin_refmap_suffix}",
+  "mixins": [
+  ],
+  "client": [
+    "MinecraftMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
