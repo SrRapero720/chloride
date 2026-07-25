@@ -136,6 +136,8 @@
   "chloride.player": "Jugador",
   "chloride.player.fast_sneak.title": "Agacharse Rapido",
   "chloride.player.fast_sneak.desc": "Elimina el suavizado de la camara al agacharte",
+  "chloride.player.clear_spectator.title": "Espectador Limpio",
+  "chloride.player.clear_spectator.desc": "Bloquea los shaders de post-proceso vanilla, como los efectos de espectador del creeper/enderman",
 
   "chloride.world": "Entorno",
   "chloride.world.blueband.title": "Banda Azul del Mundo",

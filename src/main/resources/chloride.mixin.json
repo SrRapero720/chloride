@@ -9,6 +9,7 @@
     "AdaptiveSyncMixin",
     "BorderlessMixin$KeyboardHandlerMixin",
     "BorderlessMixin$WindowMixin",
+    "ClearSpectatorMixin",
     "CloudHeightMixin",
     "EntityDistanceCullingMixin$LevelRendererEntityMixin",
     "EntityDistanceCullingMixin$EntityDispatcherMixin",

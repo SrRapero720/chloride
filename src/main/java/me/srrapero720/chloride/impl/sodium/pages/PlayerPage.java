@@ -34,6 +34,13 @@ public class PlayerPage {
                         .setDefaultValue(100)
                         .setBinding(v -> options.fovEffectScale().set(v / 100d),
                                 () -> (int) Math.round(options.fovEffectScale().get() * 100)))
+                .addOption(b.createBooleanOption(Chloride.id("clearSpectator"))
+                        .setName(Component.translatable("chloride.player.clear_spectator.title"))
+                        .setTooltip(Component.translatable("chloride.player.clear_spectator.desc"))
+                        .setStorageHandler(STORAGE)
+                        .setImpact(OptionImpact.LOW)
+                        .setDefaultValue(false)
+                        .setBinding(v -> ChlorideConfig.player.clearSpectator = v, () -> ChlorideConfig.player.clearSpectator))
         );
 
         return page;

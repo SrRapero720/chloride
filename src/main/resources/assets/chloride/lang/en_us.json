@@ -136,6 +136,8 @@
   "chloride.player": "Player",
   "chloride.player.fast_sneak.title": "Fast Sneak",
   "chloride.player.fast_sneak.desc": "Removes the camera height smoothing when sneaking",
+  "chloride.player.clear_spectator.title": "Clear Spectator",
+  "chloride.player.clear_spectator.desc": "Blocks vanilla post-process shaders, like the creeper/enderman spectator effects",
 
   "chloride.world": "World",
   "chloride.world.blueband.title": "Sky Blue band",
