@@ -112,6 +112,12 @@ public class InterfacePage {
                         .setStorageHandler(STORAGE)
                         .setDefaultValue(true)
                         .setBinding(v -> ChlorideConfig.ui.fastLanguageReload = v, () -> ChlorideConfig.ui.fastLanguageReload))
+                .addOption(b.createBooleanOption(Chloride.id("profilerPie"))
+                        .setName(Component.translatable("chloride.interface.profiler.title"))
+                        .setTooltip(Component.translatable("chloride.interface.profiler.desc"))
+                        .setStorageHandler(STORAGE)
+                        .setDefaultValue(false)
+                        .setBinding(v -> ChlorideConfig.ui.profilerPie = v, () -> ChlorideConfig.ui.profilerPie))
         );
 
         return page;

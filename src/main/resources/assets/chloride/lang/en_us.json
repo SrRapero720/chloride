@@ -114,6 +114,8 @@
 
   "chloride.interface.tooltips.title": "Advanced Item Tooltips",
   "chloride.interface.tooltips.desc": "Shows item id and durability on tooltips without pressing F3+H, and keeps it across restarts",
+  "chloride.interface.profiler.title": "Persistent Profiler Pie",
+  "chloride.interface.profiler.desc": "Keeps the F3+1 profiler pie chart always on screen, without opening the debug overlay",
 
   "chloride.interface.language.fast_reload.title": "Fast Language Reload",
   "chloride.interface.language.fast_reload.desc": "Language updates only reload language instead of all resources, a 99.9% extra of speed",

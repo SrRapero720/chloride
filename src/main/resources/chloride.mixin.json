@@ -24,6 +24,7 @@
     "MinecraftMixin",
     "NameTagToggleMixin",
     "OverlayMixin",
+    "ProfilerPieMixin",
     "ParticlesMixins$EngineMixin",
     "ParticlesMixins$FireworkStarterMixin",
     "ParticlesMixins$LevelRendererMixin",

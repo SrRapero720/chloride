@@ -114,6 +114,8 @@
 
   "chloride.interface.tooltips.title": "Tooltips Avanzados",
   "chloride.interface.tooltips.desc": "Muestra la id y durabilidad de los items en los tooltips sin presionar F3+H, y lo mantiene entre reinicios",
+  "chloride.interface.profiler.title": "Profiler Persistente",
+  "chloride.interface.profiler.desc": "Mantiene la grafica de pastel del profiler (shift+F3) siempre en pantalla, sin abrir el overlay de debug",
 
   "chloride.interface.language.fast_reload.title": "Recarga Rápida de Lenguaje",
   "chloride.interface.language.fast_reload.desc": "Actualiza el idioma sin recargar los recursos del juego, incrementa el rendimiento en un 99.9%",
