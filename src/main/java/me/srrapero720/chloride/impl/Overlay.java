@@ -3,33 +3,55 @@ package me.srrapero720.chloride.impl;
 import me.srrapero720.chloride.Chloride;
 import me.srrapero720.chloride.ChlorideConfig;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.util.debugchart.LocalSampleLogger;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 @EventBusSubscriber(modid = Chloride.ID, value = Dist.CLIENT)
 public class Overlay {
     private static final FPSDisplayBuilder DISPLAY = new FPSDisplayBuilder();
 
-    private static final Component MSG_FPS = Component.translatable("chloride.interface.fps");
-    private static final Component MSG_MIN = Component.translatable("chloride.interface.fps.min");
-    private static final Component MSG_AVG = Component.translatable("chloride.interface.fps.avg");
-    private static final Component MSG_GPU = Component.translatable("chloride.interface.fps.gpu");
-    private static final Component MSG_MEM = Component.translatable("chloride.interface.fps.mem");
+    private static final Component MSG_FPS = Component.translatable("chloride.overlay.fps");
+    private static final Component MSG_MIN = Component.translatable("chloride.overlay.min");
+    private static final Component MSG_AVG = Component.translatable("chloride.overlay.avg");
+    private static final Component MSG_GPU = Component.translatable("chloride.overlay.gpu");
+    private static final Component MSG_MEM = Component.translatable("chloride.overlay.mem");
+    private static final Component MSG_SPRINT = Component.translatable("chloride.overlay.sprint");
+
+    // -Xmx NEVER CHANGES AT RUNTIME
+    private static final String MEM_TOTAL = " (" + String.format(Locale.ROOT, "%.1f", Runtime.getRuntime().maxMemory() / 1073741824d) + "GB)";
 
     private static int fps = -1;
     private static int minFPS = -1;
     private static int avgFPS = -1;
     private static int gpuPercent = -1;
     private static int memUsage = -1;
+
+    // BIOME NAME/COLOR ARE CACHED UNTIL THE BIOME CHANGES; TIMESTAMPS DRIVE THE LIGHT-ON-CHANGE HIGHLIGHT
+    private static ResourceKey<Biome> biomeKey;
+    private static String biomeName = "?";
+    private static int biomeColor = 0xFFFFFF;
+    private static long biomeChange;
+    private static boolean sprinting;
+    private static long sprintChange;
+    private static float sprintOpacity;
 
     // AVG
     private static final int[] avgCount = new int[24];
@@ -70,74 +92,228 @@ public class Overlay {
         memUsage = (int) ((ramUsed() * 100) / Runtime.getRuntime().maxMemory());
         gpuPercent = Math.min((int) mc.getGpuUtilization(), 100);
         avgFPS = calculateAverage();
-        renderFPSChar(mc, event.getGuiGraphics(), mc.font, mc.getWindow().getGuiScale());
+        renderOverlays(mc, event.getGuiGraphics(), mc.font, mc.getWindow().getGuiScale());
     }
 
-    private static void renderFPSChar(final Minecraft mc, final GuiGraphics graphics, final Font font, final double scale) {
-        if (Minecraft.getInstance().getDebugOverlay().showDebugScreen() || Minecraft.getInstance().getDebugOverlay().showProfilerChart()) return; // No render when F3 is open
+    private static void renderOverlays(final Minecraft mc, final GuiGraphics graphics, final Font font, final double guiScale) {
+        if (mc.getDebugOverlay().showDebugScreen() || mc.getDebugOverlay().showProfilerChart()) return; // No render when F3 is open
 
-        final var mode = ChlorideConfig.fpsDisplay.mode;
-        final var systemMode = ChlorideConfig.fpsDisplay.systemDetails;
-
-        if (mode.off() && systemMode.off()) return; // NOTHING TO DO HERE, BACK TO WORK
-
-        DISPLAY.release();
-
-        // FPS
-        switch (mode) {
-            case SIMPLE -> DISPLAY.append(colorByLow(fps)).add(fix(fps)).add(" ").add(MSG_FPS.getString()).add(ChatFormatting.RESET);
-            case ADVANCED -> {
-                DISPLAY.append(colorByLow(fps)).add(fix(fps)).add(ChatFormatting.RESET);
-                DISPLAY.append(colorByLow(minFPS)).add(MSG_MIN).add(" ").add(fix(minFPS)).add(ChatFormatting.RESET);
-                DISPLAY.append(colorByLow(avgFPS)).add(MSG_AVG).add(" ").add(fix(avgFPS)).add(ChatFormatting.RESET);
-            }
-        }
-        if (!DISPLAY.isEmpty()) DISPLAY.split();
-
-        // GPU AND RAM
-        switch (systemMode) {
-            case GPU_ONLY ->
-                    DISPLAY.append(colorByPercent(gpuPercent)).add(MSG_GPU).add(" ").add(fix(gpuPercent)).add("%").add(ChatFormatting.RESET);
-            case RAM_ONLY ->
-                    DISPLAY.append(colorByPercent(memUsage)).add(MSG_MEM).add(" ").add(fix(memUsage)).add("%").add(ChatFormatting.RESET);
-            case ALL -> {
-                DISPLAY.append(colorByPercent(gpuPercent)).add(MSG_GPU).add(" ").add(fix(gpuPercent)).add("%").add(ChatFormatting.RESET);
-                DISPLAY.append(colorByPercent(memUsage)).add(MSG_MEM).add(" ").add(fix(memUsage)).add("%").add(ChatFormatting.RESET);
-            }
-        }
-
-        if (DISPLAY.isEmpty()) DISPLAY.add("FATAL ERROR");
-
-        final float marginX = (scale > 0) ? ChlorideConfig.fpsDisplay.margin / (float) scale : ChlorideConfig.fpsDisplay.margin;
-        final float marginY = (scale > 0) ? ChlorideConfig.fpsDisplay.verticalMargin / (float) scale : ChlorideConfig.fpsDisplay.verticalMargin;
-
-        // Prevent FPS-Display to render outside screenspace
-        final String displayString = DISPLAY.toString();
-        final float maxPosX = graphics.guiWidth() - font.width(displayString);
-        final float maxPosY = graphics.guiHeight() - font.lineHeight;
-        final float posX;
-        final float posY;
-
-        posX = switch (ChlorideConfig.fpsDisplay.align) {
-            case LEFT -> marginX;
-            case CENTER -> maxPosX / 2;
-            case RIGHT -> maxPosX - marginX;
-        };
-        posY = switch (ChlorideConfig.fpsDisplay.verticalAlign) {
-            case TOP -> marginY;
-            case CENTER -> maxPosY / 2;
-            case BOTTOM -> maxPosY - marginY;
-        };
+        final var player = mc.player;
+        final long now = Util.getMillis();
+        final float scale = ChlorideConfig.overlay.scale / 100f;
+        // CONFIG MARGINS ARE RAW SCREEN PIXELS; KEEP THEM CONSTANT REGARDLESS OF GUI OR OVERLAY SCALE
+        final float pixel = (float) ((guiScale > 0 ? guiScale : 1) * scale);
+        final float availW = graphics.guiWidth() / scale;
+        final float availH = graphics.guiHeight() / scale;
 
         graphics.pose().pushPose();
-        if (ChlorideConfig.fpsDisplay.shadow) {
-            graphics.fill((int) posX - 2, (int) posY - 2, (int) posX + font.width(displayString) + 2, (int) (posY + font.lineHeight) + 1, -1873784752);
+        graphics.pose().scale(scale, scale, 1f);
+
+        // FPS AND SYSTEM STATS
+        final var fpsCfg = ChlorideConfig.overlay.fps;
+        if (!fpsCfg.mode.off() || !fpsCfg.systemDetails.off()) {
+            DISPLAY.release();
+            switch (fpsCfg.mode) {
+                case SIMPLE -> DISPLAY.append(colorByLow(fps)).add(fix(fps)).add(" ").add(MSG_FPS.getString()).add(ChatFormatting.RESET);
+                case ADVANCED -> {
+                    DISPLAY.append(colorByLow(fps)).add(fix(fps)).add(ChatFormatting.RESET);
+                    DISPLAY.append(colorByLow(minFPS)).add(MSG_MIN).add(" ").add(fix(minFPS)).add(ChatFormatting.RESET);
+                    DISPLAY.append(colorByLow(avgFPS)).add(MSG_AVG).add(" ").add(fix(avgFPS)).add(ChatFormatting.RESET);
+                }
+            }
+            if (!DISPLAY.isEmpty()) DISPLAY.split();
+
+            // GPU AND RAM, WITH OPTIONAL ACTIVE ENGINE AND JVM TOTAL MEMORY SUFFIXES
+            final String engine = fpsCfg.engine ? " (" + GraphicsEngine.active().title() + ")" : "";
+            final String memTotal = fpsCfg.totalMemory ? MEM_TOTAL : "";
+            switch (fpsCfg.systemDetails) {
+                case GPU_ONLY ->
+                        DISPLAY.append(colorByPercent(gpuPercent)).add(MSG_GPU).add(" ").add(fix(gpuPercent)).add("%").add(ChatFormatting.RESET).add(engine);
+                case RAM_ONLY ->
+                        DISPLAY.append(colorByPercent(memUsage)).add(MSG_MEM).add(" ").add(fix(memUsage)).add("%").add(ChatFormatting.RESET).add(memTotal);
+                case ALL -> {
+                    DISPLAY.append(colorByPercent(gpuPercent)).add(MSG_GPU).add(" ").add(fix(gpuPercent)).add("%").add(ChatFormatting.RESET).add(engine);
+                    DISPLAY.append(colorByPercent(memUsage)).add(MSG_MEM).add(" ").add(fix(memUsage)).add("%").add(ChatFormatting.RESET).add(memTotal);
+                }
+            }
+
+            if (!DISPLAY.isEmpty()) {
+                draw(graphics, font, DISPLAY.toString(), argb(0xFFFFFF, 1 - fpsCfg.transparency / 100f),
+                        fpsCfg.align, fpsCfg.verticalAlign, fpsCfg.margin / pixel, fpsCfg.verticalMargin / pixel, availW, availH);
+            }
+        }
+
+        // COORDINATES, ROTATION AND FACING
+        final var coords = ChlorideConfig.overlay.coords;
+        if (player != null && coords.mode.visible()) {
+            DISPLAY.release();
+            if (coords.colors) {
+                DISPLAY.append(ChatFormatting.RED).add("X ").add(ChatFormatting.RESET).add(Mth.floor(player.getX()));
+                DISPLAY.append(ChatFormatting.GREEN).add("Y ").add(ChatFormatting.RESET).add(Mth.floor(player.getY()));
+                DISPLAY.append(ChatFormatting.BLUE).add("Z ").add(ChatFormatting.RESET).add(Mth.floor(player.getZ()));
+            } else {
+                DISPLAY.append("X ").add(Mth.floor(player.getX()));
+                DISPLAY.append("Y ").add(Mth.floor(player.getY()));
+                DISPLAY.append("Z ").add(Mth.floor(player.getZ()));
+            }
+            final String pos = DISPLAY.toString();
+
+            // ROTATION AND CARDINAL FACING AS "X 0° | Y 0° | NORTH", SHARING THE PURPLE ACCENT
+            String facing = "";
+            if (coords.mode.extended()) {
+                DISPLAY.release();
+                if (coords.mode.rotation()) {
+                    if (coords.colors) {
+                        DISPLAY.append(ChatFormatting.LIGHT_PURPLE).add("X ").add(ChatFormatting.RESET).add(Math.round(Mth.wrapDegrees(player.getYRot()))).add("°");
+                        DISPLAY.append(ChatFormatting.LIGHT_PURPLE).add("Y ").add(ChatFormatting.RESET).add(Math.round(player.getXRot())).add("°");
+                    } else {
+                        DISPLAY.append("X ").add(Math.round(Mth.wrapDegrees(player.getYRot()))).add("°");
+                        DISPLAY.append("Y ").add(Math.round(player.getXRot())).add("°");
+                    }
+                }
+                if (coords.mode.facing()) {
+                    final String direction = player.getDirection().getName().toUpperCase(Locale.ROOT);
+                    if (coords.colors) {
+                        DISPLAY.append(ChatFormatting.LIGHT_PURPLE).add(direction).add(ChatFormatting.RESET);
+                    } else {
+                        DISPLAY.append(direction);
+                    }
+                }
+                facing = DISPLAY.toString();
+            }
+
+            final float marginX = coords.margin / pixel;
+            final float marginY = coords.verticalMargin / pixel;
+            final int posArgb = argb(0xFFFFFF, 1 - coords.transparency / 100f);
+            final int facingArgb = argb(0xFFFFFF, 1 - coords.rotationTransparency / 100f);
+
+            if (facing.isEmpty()) {
+                draw(graphics, font, pos, posArgb, coords.align, coords.verticalAlign, marginX, marginY, availW, availH);
+            } else if (coords.rotationNewLine) {
+                // TWO INDEPENDENTLY-ALIGNED LINES SHARING ONE BLOCK POSITION
+                final int step = font.lineHeight + 3;
+                final float y = posY(step + font.lineHeight, coords.verticalAlign, marginY, availH);
+                drawAt(graphics, font, pos, posArgb, posX(font.width(pos), coords.align, marginX, availW), y);
+                drawAt(graphics, font, facing, facingArgb, posX(font.width(facing), coords.align, marginX, availW), y + step);
+            } else {
+                // SINGLE LINE; THE ROTATION SEGMENT KEEPS ITS OWN TRANSPARENCY
+                final String sep = " - ";
+                final float posW = font.width(pos);
+                final float x = posX(posW + font.width(sep) + font.width(facing), coords.align, marginX, availW);
+                final float y = posY(font.lineHeight, coords.verticalAlign, marginY, availH);
+                drawAt(graphics, font, pos, posArgb, x, y);
+                drawAt(graphics, font, sep + facing, facingArgb, x + posW, y);
+            }
+        }
+
+        // BIOME NAME, NO LABEL
+        final var biome = ChlorideConfig.overlay.biome;
+        if (player != null && biome.enabled && mc.level != null) {
+            final Holder<Biome> holder = mc.level.getBiome(player.blockPosition());
+            final ResourceKey<Biome> key = holder.unwrapKey().orElse(null);
+            if (key != biomeKey) {
+                biomeKey = key;
+                biomeName = (key == null) ? "?" : Component.translatable(key.location().toLanguageKey("biome")).getString();
+                biomeColor = biomeColor(holder, key);
+                biomeChange = now;
+            }
+            final int color = biome.colorByBiome ? biomeColor : 0xFFFFFF;
+            draw(graphics, font, biomeName, argb(color, opacity(biome.transparency, biome.lightOnChange, biomeChange, now)),
+                    biome.align, biome.verticalAlign, biome.margin / pixel, biome.verticalMargin / pixel, availW, availH);
+        }
+
+        // RUNNING STATE: FADE-IN ON START, BRIGHT -> LIGHT WHILE SPRINTING, FADE-OUT ON STOP
+        final var running = ChlorideConfig.overlay.running;
+        if (player != null && running.enabled) {
+            if (player.isSprinting() != sprinting) {
+                sprinting = player.isSprinting();
+                sprintChange = now;
+            }
+            if (sprinting) {
+                sprintOpacity = opacity(running.transparency, running.lightOnChange, sprintChange, now) * easeOut((now - sprintChange) / 250f);
+                draw(graphics, font, MSG_SPRINT.getString(), argb(0x55FF55, sprintOpacity),
+                        running.align, running.verticalAlign, running.margin / pixel, running.verticalMargin / pixel, availW, availH);
+            } else if (now - sprintChange < 750) {
+                // FADE-OUT FROM THE LAST VISIBLE OPACITY
+                final float fade = sprintOpacity * (1 - easeOut((now - sprintChange) / 750f));
+                if (fade > 0.02f) {
+                    draw(graphics, font, MSG_SPRINT.getString(), argb(0x55FF55, fade),
+                            running.align, running.verticalAlign, running.margin / pixel, running.verticalMargin / pixel, availW, availH);
+                }
+            }
+        }
+
+        DISPLAY.release();
+        graphics.pose().popPose();
+    }
+
+    // SHARED SINGLE-LINE DRAW FOR THE SIMPLE OVERLAYS
+    private static void draw(final GuiGraphics graphics, final Font font, final String text, final int argb,
+                             final FPSAlign align, final FPSVAlign verticalAlign, final float marginX, final float marginY,
+                             final float availW, final float availH) {
+        drawAt(graphics, font, text, argb, posX(font.width(text), align, marginX, availW), posY(font.lineHeight, verticalAlign, marginY, availH));
+    }
+
+    private static void drawAt(final GuiGraphics graphics, final Font font, final String text, final int argb, final float x, final float y) {
+        if (ChlorideConfig.overlay.contrast == Contrast.BACKGROUND) {
+            // BOX ALPHA FOLLOWS THE TEXT ALPHA, SCALED TO THE F3-STYLE BASE (0x90)
+            final int box = ((argb >>> 24) * 144 / 255) << 24 | 0x505050;
+            graphics.fill((int) x - 2, (int) y - 2, (int) (x + font.width(text)) + 2, (int) y + font.lineHeight + 1, box);
             graphics.flush();
         }
 
-        graphics.drawString(font, displayString, posX, posY, 0xffffffff, true);
-        DISPLAY.release();
-        graphics.pose().popPose();
+        graphics.drawString(font, text, x, y, argb, ChlorideConfig.overlay.contrast != Contrast.NONE);
+    }
+
+    private static float posX(final float width, final FPSAlign align, final float margin, final float availW) {
+        return switch (align) {
+            case LEFT -> margin;
+            case CENTER -> (availW - width) / 2;
+            case RIGHT -> availW - width - margin;
+        };
+    }
+
+    private static float posY(final float height, final FPSVAlign align, final float margin, final float availH) {
+        return switch (align) {
+            case TOP -> margin;
+            case CENTER -> (availH - height) / 2;
+            case BOTTOM -> availH - height - margin;
+        };
+    }
+
+    // LIGHT-ON-CHANGE OPACITY: FULL FOR 3s AFTER A CHANGE, THEN A 0.75s EASE-OUT BACK TO THE CONFIGURED ONE
+    private static float opacity(final int transparency, final boolean lightOnChange, final long changed, final long now) {
+        final float base = 1 - transparency / 100f;
+        if (!lightOnChange) return base;
+
+        final long dt = now - changed;
+        if (dt < 3000) return 1;
+        if (dt >= 3750) return base;
+        return 1 - (1 - base) * easeOut((dt - 3000) / 750f);
+    }
+
+    // QUADRATIC EASE-OUT, CLAMPED TO [0..1]
+    private static float easeOut(final float progress) {
+        final float inverse = 1 - Math.min(progress, 1);
+        return 1 - inverse * inverse;
+    }
+
+    private static int argb(final int rgb, final float opacity) {
+        return ((int) (opacity * 255) << 24) | rgb;
+    }
+
+    // BIOME CATEGORY COLORS: SPECIFIC BIOMES FIRST (NETHER/CHERRY/PALE/MUSHROOM), THEN WATER/WET/COLD/HOT TAGS
+    private static int biomeColor(final Holder<Biome> biome, final ResourceKey<Biome> key) {
+        if (biome.is(BiomeTags.IS_NETHER)) return 0xFF5533;
+        if (key == Biomes.CHERRY_GROVE) return 0xFFB7C5;
+        // if (key != null && key.location().getPath().equals("pale_garden")) return 0xAAAAAA; // RESERVED FOR PALE GARDEN 1.21.4+
+        if (biome.is(Tags.Biomes.IS_MUSHROOM)) return 0x9B6F47;
+        if (biome.is(BiomeTags.IS_OCEAN) || biome.is(BiomeTags.IS_DEEP_OCEAN) || biome.is(BiomeTags.IS_RIVER)) return 0x4169E1;
+        if (biome.is(BiomeTags.IS_JUNGLE) || biome.is(Tags.Biomes.IS_SWAMP)) return 0x00AA00;
+        if (biome.is(Tags.Biomes.IS_COLD) || biome.is(Tags.Biomes.IS_ICY) || biome.is(Tags.Biomes.IS_SNOWY)) return 0x55FFFF;
+        if (biome.is(Tags.Biomes.IS_HOT)) return 0xFFAA00;
+        if (biome.is(Tags.Biomes.IS_PLAINS) || biome.is(BiomeTags.IS_FOREST)) return 0x55FF55;
+        return 0xFFFFFF;
     }
 
     private static String fix(final int value) {
@@ -204,6 +380,17 @@ public class Overlay {
     public enum FPSAlign { LEFT, CENTER, RIGHT}
 
     public enum FPSVAlign { TOP, CENTER, BOTTOM}
+
+    public enum Contrast { NONE, SHADOW, BACKGROUND }
+
+    public enum CoordsMode {
+        OFF, SIMPLE, ROTATION, FACING, ALL;
+
+        public boolean visible() { return this != OFF; }
+        public boolean rotation() { return this == ROTATION || this == ALL; }
+        public boolean facing() { return this == FACING || this == ALL; }
+        public boolean extended() { return this != OFF && this != SIMPLE; }
+    }
 
     public enum FPSDetails {
         OFF, ALL, GPU_ONLY, RAM_ONLY;

@@ -60,6 +60,8 @@ public class ChlorideConfigIntegration implements ConfigEntryPoint {
                     return state.readEnumOption(FULL_SCREEN, Borderless.Mode.class) == Borderless.Mode.FULLSCREEN;
                 }, FULL_SCREEN));
 
+
+        mod.addPage(OverlayPage.build(builder));
         mod.addPage(InterfacePage.build(builder));
         mod.addPage(WorldPage.build(builder));
         if (!ChlorideConfig.modpackMode) mod.addPage(DarknessPage.build(builder));
