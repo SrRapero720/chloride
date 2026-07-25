@@ -133,6 +133,9 @@
   "chloride.interface.jei.hint.desc": "Oculta el mensaje de sugerencia que aparece cuando el menu de JEI/REI/EMI esta oculto",
   "chloride.jei.message": "Busca algo para mostrar el menu",
 
+  "chloride.player": "Jugador",
+  "chloride.player.fast_sneak.title": "Agacharse Rapido",
+  "chloride.player.fast_sneak.desc": "Elimina el suavizado de la camara al agacharte",
 
   "chloride.world": "Entorno",
   "chloride.world.blueband.title": "Banda Azul del Mundo",

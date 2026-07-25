@@ -88,6 +88,7 @@ public class ChlorideConfigIntegration implements ConfigEntryPoint {
                 .setName(Component.translatable("chloride.particles.list"))
                 .setScreenConsumer(current -> Minecraft.getInstance().setScreen(new ParticleListScreen(current))));
         mod.addPage(EntitiesPage.build(builder));
+        mod.addPage(PlayerPage.build(builder));
         if (!ChlorideConfig.modpackMode) mod.addPage(ZoomPage.build(builder));
 
         if (ChlorideConfig.modpackMode) {

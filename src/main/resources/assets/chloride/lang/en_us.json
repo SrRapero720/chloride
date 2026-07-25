@@ -133,6 +133,9 @@
   "chloride.interface.jei.hint.desc": "Hides JEI/REI/EMI search hint message that appears when hiding the item list",
   "chloride.jei.message": "Search to show items",
 
+  "chloride.player": "Player",
+  "chloride.player.fast_sneak.title": "Fast Sneak",
+  "chloride.player.fast_sneak.desc": "Removes the camera height smoothing when sneaking",
 
   "chloride.world": "World",
   "chloride.world.blueband.title": "Sky Blue band",
