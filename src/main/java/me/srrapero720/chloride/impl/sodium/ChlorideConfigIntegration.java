@@ -2,6 +2,7 @@ package me.srrapero720.chloride.impl.sodium;
 
 import com.mojang.blaze3d.platform.Monitor;
 import me.srrapero720.chloride.ChlorideConfig;
+import me.srrapero720.chloride.impl.AdaptiveSync;
 import me.srrapero720.chloride.impl.Borderless;
 import me.srrapero720.chloride.impl.sodium.pages.*;
 import net.caffeinemc.mods.sodium.api.config.ConfigEntryPoint;
@@ -23,6 +24,7 @@ public class ChlorideConfigIntegration implements ConfigEntryPoint {
 
     private static final ResourceLocation SODIUM_FULLSCREEN = ResourceLocation.parse("sodium:general.fullscreen");
     private static final ResourceLocation SODIUM_FULLSCREEN_RESOLUTION = ResourceLocation.parse("sodium:general.fullscreen_resolution");
+    private static final ResourceLocation SODIUM_VSYNC = ResourceLocation.parse("sodium:general.vsync");
     /** Id of Chloride's replacement option; both the replacement and the resolution overlay's dependency point here. */
     private static final ResourceLocation FULL_SCREEN = id("fullScreen");
     /** Neon green accent, in the spirit of Sodium's mint theme. Sodium derives the lighter/darker shades from it. */
@@ -60,6 +62,21 @@ public class ChlorideConfigIntegration implements ConfigEntryPoint {
                     return state.readEnumOption(FULL_SCREEN, Borderless.Mode.class) == Borderless.Mode.FULLSCREEN;
                 }, FULL_SCREEN));
 
+        // Replace Sodium's V-Sync toggle with a three-way selector adding adaptive sync (EXT_swap_control_tear).
+        // On unsupported drivers the ADAPTIVE value gracefully behaves as regular V-Sync (see AdaptiveSyncMixin).
+        mod.registerOptionReplacement(SODIUM_VSYNC, builder.createEnumOption(id("vSync"), AdaptiveSync.Mode.class)
+                .setName(Component.translatable("options.vsync"))
+                .setTooltip(Component.translatable("chloride.general.vsync.desc"))
+                .setElementNameProvider(EnumOptionBuilder.nameProviderFrom(
+                        Component.translatable("options.off"),
+                        Component.translatable("options.on"),
+                        Component.translatable("chloride.general.vsync.adaptive")))
+                .setStorageHandler(() -> {
+                    ChlorideConfig.write();
+                    Minecraft.getInstance().options.save();
+                })
+                .setDefaultValue(AdaptiveSync.Mode.ON)
+                .setBinding(AdaptiveSync::mode, AdaptiveSync::mode));
 
         mod.addPage(OverlayPage.build(builder));
         mod.addPage(InterfacePage.build(builder));

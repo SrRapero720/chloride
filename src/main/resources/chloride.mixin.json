@@ -6,6 +6,7 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "chloride.mixin-refmap.json",
   "client": [
+    "AdaptiveSyncMixin",
     "BorderlessMixin$KeyboardHandlerMixin",
     "BorderlessMixin$WindowMixin",
     "CloudHeightMixin",

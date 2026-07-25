@@ -12,6 +12,8 @@
   "chloride.general.screen.borderless.optimization": "Disable Borderless optimization",
   "chloride.general.screen.borderless.optimization.desc": "Force-Disables Borderless optimizations by the driver\n\nThis fixes the black blink leaving the game (noticeable having multiple monitors) but you might experiment a huge frame drop disabling it",
 
+  "chloride.general.vsync.desc": "OFF - never waits for the monitor\nON - always syncs, may stutter when running below the refresh rate\nADAPTIVE - syncs, but tears instead of stalling when a frame arrives late. Behaves as ON if the driver lacks EXT_swap_control_tear",
+  "chloride.general.vsync.adaptive": "Adaptive",
 
   "chloride.settings.coming_soon": "Coming Soon!",
   "chloride.settings.chloride": "Chloride Settings",

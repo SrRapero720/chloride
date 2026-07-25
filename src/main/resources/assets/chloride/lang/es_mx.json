@@ -12,6 +12,8 @@
   "chloride.general.screen.borderless.optimization": "Desactivar optimización en sin bordes",
   "chloride.general.screen.borderless.optimization.desc": "Desactiva las optimizaciones del driver\n\nDesactiva el parpadeo negro al cambiar de programa (notable con multiples monitores) pero podrías experimentar una baja considerable de FPS",
 
+  "chloride.general.vsync.desc": "OFF - nunca espera al monitor\nON - siempre sincroniza, puede dar tirones si vas por debajo de la tasa de refresco\nADAPTATIVO - sincroniza, pero rasga la imagen en vez de congelarla cuando un frame llega tarde. Se comporta como ON si el driver no soporta EXT_swap_control_tear",
+  "chloride.general.vsync.adaptive": "Adaptativo",
 
   "chloride.settings.coming_soon": "¡Próximamente!",
   "chloride.settings.chloride": "Ajustes de Chloride",
