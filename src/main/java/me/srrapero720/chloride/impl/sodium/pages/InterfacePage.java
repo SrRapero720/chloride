@@ -48,6 +48,15 @@ public class InterfacePage {
                         .setEnabledProvider(state -> jremi && state.readBooleanOption(HIDE_JREMI), HIDE_JREMI)
                         .setDefaultValue(false)
                         .setBinding(v -> ChlorideConfig.ui.hideJREMIHint = v, () -> ChlorideConfig.ui.hideJREMIHint))
+                .addOption(b.createBooleanOption(Chloride.id("advancedTooltips"))
+                        .setName(Component.translatable("chloride.interface.tooltips.title"))
+                        .setTooltip(Component.translatable("chloride.interface.tooltips.desc"))
+                        .setStorageHandler(STORAGE)
+                        .setDefaultValue(false)
+                        .setBinding(v -> {
+                            ChlorideConfig.ui.advancedTooltips = v;
+                            Minecraft.getInstance().options.advancedItemTooltips = v;
+                        }, () -> ChlorideConfig.ui.advancedTooltips))
         );
 
         // Toasts

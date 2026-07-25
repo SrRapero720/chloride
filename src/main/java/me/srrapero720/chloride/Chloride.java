@@ -46,6 +46,9 @@ public class Chloride {
             if (optsFullscreen != configFullscreen) {
                 Borderless.setFullScreenMode(ChlorideConfig.fullscreen.mode);
             }
+
+            // MC NEVER PERSISTS ADVANCED TOOLTIPS (F3+H IS SESSION-ONLY).
+            mc.options.advancedItemTooltips = ChlorideConfig.ui.advancedTooltips;
         });
     }
 

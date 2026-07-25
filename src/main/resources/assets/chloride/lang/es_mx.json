@@ -112,6 +112,8 @@
   "chloride.interface.toasts.tutorial.title": "Toasts del Tutorial",
   "chloride.interface.toasts.tutorial.desc": "Muestra las notificaciones del tutorial",
 
+  "chloride.interface.tooltips.title": "Tooltips Avanzados",
+  "chloride.interface.tooltips.desc": "Muestra la id y durabilidad de los items en los tooltips sin presionar F3+H, y lo mantiene entre reinicios",
 
   "chloride.interface.language.fast_reload.title": "Recarga Rápida de Lenguaje",
   "chloride.interface.language.fast_reload.desc": "Actualiza el idioma sin recargar los recursos del juego, incrementa el rendimiento en un 99.9%",

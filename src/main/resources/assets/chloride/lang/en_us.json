@@ -112,6 +112,8 @@
   "chloride.interface.toasts.tutorial.title": "Tutorial Toasts",
   "chloride.interface.toasts.tutorial.desc": "Shows the tutorial popups",
 
+  "chloride.interface.tooltips.title": "Advanced Item Tooltips",
+  "chloride.interface.tooltips.desc": "Shows item id and durability on tooltips without pressing F3+H, and keeps it across restarts",
 
   "chloride.interface.language.fast_reload.title": "Fast Language Reload",
   "chloride.interface.language.fast_reload.desc": "Language updates only reload language instead of all resources, a 99.9% extra of speed",
