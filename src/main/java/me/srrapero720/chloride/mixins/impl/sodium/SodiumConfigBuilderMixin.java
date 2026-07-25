@@ -11,12 +11,15 @@ import net.caffeinemc.mods.sodium.api.config.option.OptionImpact;
 import net.caffeinemc.mods.sodium.api.config.structure.ConfigBuilder;
 import net.caffeinemc.mods.sodium.api.config.structure.OptionPageBuilder;
 import net.caffeinemc.mods.sodium.client.gui.SodiumConfigBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.NeoForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.PERCENT;
 import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.STORAGE;
+import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.VANILLA_STORAGE;
 import static me.srrapero720.chloride.Chloride.id;
 
 /**
@@ -39,7 +42,17 @@ public class SodiumConfigBuilderMixin {
                         .setBinding(v -> {
                             ChlorideConfig.fullscreen.disableBorderlessOptimizations = v;
                             Borderless.reloadFullscreenMode();
-                        }, () -> ChlorideConfig.fullscreen.disableBorderlessOptimizations)));
+                        }, () -> ChlorideConfig.fullscreen.disableBorderlessOptimizations))
+                .addOption(b.createIntegerOption(id("screenEffectScale"))
+                        .setName(Component.translatable("options.screenEffectScale"))
+                        .setTooltip(Component.translatable("options.screenEffectScale.tooltip"))
+                        .setValueFormatter(PERCENT)
+                        .setRange(0, 100, 1)
+                        .setStorageHandler(VANILLA_STORAGE)
+                        .setImpact(OptionImpact.LOW)
+                        .setDefaultValue(100)
+                        .setBinding(v -> Minecraft.getInstance().options.screenEffectScale().set(v / 100d),
+                                () -> (int) Math.round(Minecraft.getInstance().options.screenEffectScale().get() * 100))));
     }
 
     @ModifyReturnValue(method = "buildPerformancePage", at = @At("RETURN"))

@@ -24,6 +24,16 @@ public class PlayerPage {
                         .setStorageHandler(STORAGE)
                         .setDefaultValue(false)
                         .setBinding(v -> ChlorideConfig.player.fastSneak = v, () -> ChlorideConfig.player.fastSneak))
+                .addOption(b.createIntegerOption(Chloride.id("fovEffectScale"))
+                        .setName(Component.translatable("options.fovEffectScale"))
+                        .setTooltip(Component.translatable("options.fovEffectScale.tooltip"))
+                        .setValueFormatter(PERCENT)
+                        .setRange(0, 100, 1)
+                        .setStorageHandler(VANILLA_STORAGE)
+                        .setImpact(OptionImpact.LOW)
+                        .setDefaultValue(100)
+                        .setBinding(v -> options.fovEffectScale().set(v / 100d),
+                                () -> (int) Math.round(options.fovEffectScale().get() * 100)))
         );
 
         return page;
