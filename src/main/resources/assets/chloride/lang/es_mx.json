@@ -101,6 +101,16 @@
 
   "chloride.interface": "Interfaz",
 
+  "chloride.interface.toasts.title": "Toasts",
+  "chloride.interface.toasts.desc": "Interruptor general de todas las notificaciones emergentes",
+  "chloride.interface.toasts.advancements.title": "Toasts de Logros",
+  "chloride.interface.toasts.advancements.desc": "Muestra la notificacion al desbloquear un logro",
+  "chloride.interface.toasts.recipes.title": "Toasts de Recetas",
+  "chloride.interface.toasts.recipes.desc": "Muestra la notificacion al desbloquear nuevas recetas",
+  "chloride.interface.toasts.system.title": "Toasts del Sistema",
+  "chloride.interface.toasts.system.desc": "Muestra las notificaciones del sistema, como el narrador o avisos de packs",
+  "chloride.interface.toasts.tutorial.title": "Toasts del Tutorial",
+  "chloride.interface.toasts.tutorial.desc": "Muestra las notificaciones del tutorial",
 
 
   "chloride.interface.language.fast_reload.title": "Recarga Rápida de Lenguaje",

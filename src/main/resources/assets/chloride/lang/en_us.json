@@ -101,6 +101,16 @@
 
   "chloride.interface": "Interface",
 
+  "chloride.interface.toasts.title": "Toasts",
+  "chloride.interface.toasts.desc": "Master toggle for all popup toasts",
+  "chloride.interface.toasts.advancements.title": "Advancement Toasts",
+  "chloride.interface.toasts.advancements.desc": "Shows the popup when unlocking an advancement",
+  "chloride.interface.toasts.recipes.title": "Recipe Toasts",
+  "chloride.interface.toasts.recipes.desc": "Shows the popup when unlocking new recipes",
+  "chloride.interface.toasts.system.title": "System Toasts",
+  "chloride.interface.toasts.system.desc": "Shows system popups, like narrator or pack warnings",
+  "chloride.interface.toasts.tutorial.title": "Tutorial Toasts",
+  "chloride.interface.toasts.tutorial.desc": "Shows the tutorial popups",
 
 
   "chloride.interface.language.fast_reload.title": "Fast Language Reload",
