@@ -29,19 +29,19 @@ public class EntitiesPage {
                             .setTooltip(Component.translatable("chloride.entities.nametag.entities.desc"))
                             .setStorageHandler(STORAGE)
                             .setDefaultValue(true)
-                            .setBinding(v -> ChlorideConfig.nametags.entities = v, () -> ChlorideConfig.nametags.entities))
+                            .setBinding(v -> ChlorideConfig.entities.nametags.entities = v, () -> ChlorideConfig.entities.nametags.entities))
                     .addOption(b.createBooleanOption(Chloride.id("playerNametagRendering"))
                             .setName(Component.translatable("chloride.entities.nametag.players.title"))
                             .setTooltip(Component.translatable("chloride.entities.nametag.players.desc"))
                             .setStorageHandler(STORAGE)
                             .setDefaultValue(true)
-                            .setBinding(v -> ChlorideConfig.nametags.players = v, () -> ChlorideConfig.nametags.players))
+                            .setBinding(v -> ChlorideConfig.entities.nametags.players = v, () -> ChlorideConfig.entities.nametags.players))
                     .addOption(b.createBooleanOption(Chloride.id("itemNametagRendering"))
                             .setName(Component.translatable("chloride.entities.nametag.items.title"))
                             .setTooltip(Component.translatable("chloride.entities.nametag.items.desc"))
                             .setStorageHandler(STORAGE)
                             .setDefaultValue(true)
-                            .setBinding(v -> ChlorideConfig.nametags.items = v, () -> ChlorideConfig.nametags.items))
+                            .setBinding(v -> ChlorideConfig.entities.nametags.items = v, () -> ChlorideConfig.entities.nametags.items))
             );
         }
 
@@ -52,7 +52,7 @@ public class EntitiesPage {
                         .setStorageHandler(STORAGE)
                         .setImpact(OptionImpact.HIGH)
                         .setDefaultValue(true)
-                        .setBinding(v -> ChlorideConfig.culling.entities = v, () -> ChlorideConfig.culling.entities))
+                        .setBinding(v -> ChlorideConfig.entities.culling.entities = v, () -> ChlorideConfig.entities.culling.entities))
                 .addOption(b.createIntegerOption(Chloride.id("entityLimit"))
                         .setName(Component.translatable("chloride.entities.culling.limit.title"))
                         .setTooltip(Component.translatable("chloride.entities.culling.limit.desc"))
@@ -60,7 +60,7 @@ public class EntitiesPage {
                         .setRange(0, 512, 1)
                         .setStorageHandler(STORAGE)
                         .setDefaultValue(512)
-                        .setBinding(v -> ChlorideConfig.culling.entityLimit = v, () -> ChlorideConfig.culling.entityLimit))
+                        .setBinding(v -> ChlorideConfig.entities.culling.entityLimit = v, () -> ChlorideConfig.entities.culling.entityLimit))
                 .addOption(b.createIntegerOption(Chloride.id("entityCullingDistanceX"))
                         .setName(Component.translatable("chloride.entities.culling.distance.horizontal.title"))
                         .setTooltip(Component.translatable("chloride.entities.culling.distance.horizontal.desc"))
@@ -69,8 +69,8 @@ public class EntitiesPage {
                         .setStorageHandler(STORAGE)
                         .setImpact(OptionImpact.HIGH)
                         .setDefaultValue(64)
-                        .setBinding(v -> ChlorideConfig.culling.entityDistanceX = v * v,
-                                () -> Math.toIntExact(Math.round(Math.sqrt(ChlorideConfig.culling.entityDistanceX)))))
+                        .setBinding(v -> ChlorideConfig.entities.culling.entityDistanceX = v * v,
+                                () -> Math.toIntExact(Math.round(Math.sqrt(ChlorideConfig.entities.culling.entityDistanceX)))))
                 .addOption(b.createIntegerOption(Chloride.id("entityCullingDistanceY"))
                         .setName(Component.translatable("chloride.entities.culling.distance.vertical.title"))
                         .setTooltip(Component.translatable("chloride.entities.culling.distance.vertical.desc")
@@ -81,7 +81,7 @@ public class EntitiesPage {
                         .setImpact(OptionImpact.HIGH)
                         .setEnabled(!EntityCulling.VS_I)
                         .setDefaultValue(32)
-                        .setBinding(v -> ChlorideConfig.culling.entityDistanceY = v, () -> ChlorideConfig.culling.entityDistanceY))
+                        .setBinding(v -> ChlorideConfig.entities.culling.entityDistanceY = v, () -> ChlorideConfig.entities.culling.entityDistanceY))
         );
 
         page.addOptionGroup(b.createOptionGroup()
@@ -91,7 +91,7 @@ public class EntitiesPage {
                         .setStorageHandler(STORAGE)
                         .setImpact(OptionImpact.HIGH)
                         .setDefaultValue(false)
-                        .setBinding(v -> ChlorideConfig.culling.monsters = v, () -> ChlorideConfig.culling.monsters))
+                        .setBinding(v -> ChlorideConfig.entities.culling.monsters = v, () -> ChlorideConfig.entities.culling.monsters))
                 .addOption(b.createIntegerOption(Chloride.id("monsterCullingDistanceX"))
                         .setName(Component.translatable("chloride.entities.culling.monster.distance.horizontal.title"))
                         .setTooltip(Component.translatable("chloride.entities.culling.monster.distance.horizontal.desc"))
@@ -100,8 +100,8 @@ public class EntitiesPage {
                         .setStorageHandler(STORAGE)
                         .setImpact(OptionImpact.HIGH)
                         .setDefaultValue(128)
-                        .setBinding(v -> ChlorideConfig.culling.monsterDistanceX = v * v,
-                                () -> Math.toIntExact(Math.round(Math.sqrt(ChlorideConfig.culling.monsterDistanceX)))))
+                        .setBinding(v -> ChlorideConfig.entities.culling.monsterDistanceX = v * v,
+                                () -> Math.toIntExact(Math.round(Math.sqrt(ChlorideConfig.entities.culling.monsterDistanceX)))))
                 .addOption(b.createIntegerOption(Chloride.id("monsterCullingDistanceY"))
                         .setName(Component.translatable("chloride.entities.culling.monster.distance.vertical.title"))
                         .setTooltip(Component.translatable("chloride.entities.culling.monster.distance.vertical.desc")
@@ -112,7 +112,7 @@ public class EntitiesPage {
                         .setImpact(OptionImpact.HIGH)
                         .setEnabled(!EntityCulling.VS_I)
                         .setDefaultValue(64)
-                        .setBinding(v -> ChlorideConfig.culling.monsterDistanceY = v, () -> ChlorideConfig.culling.monsterDistanceY))
+                        .setBinding(v -> ChlorideConfig.entities.culling.monsterDistanceY = v, () -> ChlorideConfig.entities.culling.monsterDistanceY))
         );
 
         page.addOptionGroup(b.createOptionGroup()
@@ -122,7 +122,7 @@ public class EntitiesPage {
                         .setStorageHandler(STORAGE)
                         .setImpact(OptionImpact.HIGH)
                         .setDefaultValue(true)
-                        .setBinding(v -> ChlorideConfig.culling.tileEntities = v, () -> ChlorideConfig.culling.tileEntities))
+                        .setBinding(v -> ChlorideConfig.entities.culling.tileEntities = v, () -> ChlorideConfig.entities.culling.tileEntities))
                 .addOption(b.createIntegerOption(Chloride.id("tileEntityCullingDistanceX"))
                         .setName(Component.translatable("chloride.entities.culling.tile.distance.horizontal.title"))
                         .setTooltip(Component.translatable("chloride.entities.culling.tile.distance.horizontal.desc"))
@@ -131,8 +131,8 @@ public class EntitiesPage {
                         .setStorageHandler(STORAGE)
                         .setImpact(OptionImpact.HIGH)
                         .setDefaultValue(64)
-                        .setBinding(v -> ChlorideConfig.culling.tileEntityDistanceX = v * v,
-                                () -> Math.toIntExact(Math.round(Math.sqrt(ChlorideConfig.culling.tileEntityDistanceX)))))
+                        .setBinding(v -> ChlorideConfig.entities.culling.tileEntityDistanceX = v * v,
+                                () -> Math.toIntExact(Math.round(Math.sqrt(ChlorideConfig.entities.culling.tileEntityDistanceX)))))
                 .addOption(b.createIntegerOption(Chloride.id("tileEntityCullingDistanceY"))
                         .setName(Component.translatable("chloride.entities.culling.tile.distance.vertical.title"))
                         .setTooltip(Component.translatable("chloride.entities.culling.tile.distance.vertical.desc")
@@ -143,7 +143,7 @@ public class EntitiesPage {
                         .setImpact(OptionImpact.HIGH)
                         .setEnabled(!EntityCulling.VS_I)
                         .setDefaultValue(32)
-                        .setBinding(v -> ChlorideConfig.culling.tileEntityDistanceY = v, () -> ChlorideConfig.culling.tileEntityDistanceY))
+                        .setBinding(v -> ChlorideConfig.entities.culling.tileEntityDistanceY = v, () -> ChlorideConfig.entities.culling.tileEntityDistanceY))
         );
 
         return page;

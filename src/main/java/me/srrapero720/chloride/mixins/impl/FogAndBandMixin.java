@@ -33,24 +33,24 @@ public abstract class FogAndBandMixin {
         if (fogrenderer$mobeffectfogfunction != null)  return;
 
 
-        if (!ChlorideConfig.fog.enabled) { // FOG IS DISABLED
+        if (!ChlorideConfig.world.fog.enabled) { // FOG IS DISABLED
             fogrenderer$fogdata.start = FOG_END;
             fogrenderer$fogdata.end = FOG_END;
             fogrenderer$fogdata.shape = FogShape.SPHERE;
             return;
-        } else if (ChlorideConfig.fog.custom) { // OVERRIDE FOG AT ALL
-            fogrenderer$fogdata.start = ChlorideConfig.fog.start;
-            fogrenderer$fogdata.end = ChlorideConfig.fog.end;
-            fogrenderer$fogdata.shape = ChlorideConfig.fog.shape;
+        } else if (ChlorideConfig.world.fog.custom) { // OVERRIDE FOG AT ALL
+            fogrenderer$fogdata.start = ChlorideConfig.world.fog.start;
+            fogrenderer$fogdata.end = ChlorideConfig.world.fog.end;
+            fogrenderer$fogdata.shape = ChlorideConfig.world.fog.shape;
             return;
         }
 
         // TOGGLE PER LEVEL
         if (entity instanceof final Player player) {
             final Level level = player.level();
-            if ((level.dimension() == Level.OVERWORLD && !ChlorideConfig.fog.onOverworld)
-                    || (level.dimension() == Level.NETHER && !ChlorideConfig.fog.onNether)
-                    || (level.dimension() == Level.END && !ChlorideConfig.fog.onEnd)) {
+            if ((level.dimension() == Level.OVERWORLD && !ChlorideConfig.world.fog.onOverworld)
+                    || (level.dimension() == Level.NETHER && !ChlorideConfig.world.fog.onNether)
+                    || (level.dimension() == Level.END && !ChlorideConfig.world.fog.onEnd)) {
                 fogrenderer$fogdata.start = FOG_END;
                 fogrenderer$fogdata.end = FOG_END;
                 fogrenderer$fogdata.shape = FogShape.SPHERE;
@@ -61,7 +61,7 @@ public abstract class FogAndBandMixin {
 
     @WrapOperation(method = "setupColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/CubicSampler;gaussianSampleVec3(Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/util/CubicSampler$Vec3Fetcher;)Lnet/minecraft/world/phys/Vec3;"))
     private static Vec3 redirect$blueband_gaussianSampleColor(final Vec3 vec, final CubicSampler.Vec3Fetcher fetcher, final Operation<Vec3> original) {
-        if (!ChlorideConfig.fog.blueBand) {
+        if (!ChlorideConfig.world.fog.blueBand) {
             final Minecraft mc = Minecraft.getInstance();
 
             if (mc.level.dimensionType().hasSkyLight())
@@ -72,19 +72,19 @@ public abstract class FogAndBandMixin {
 
     @WrapOperation(method = "setupColor", at = @At(value = "INVOKE", target = "Lorg/joml/Vector3f;dot(Lorg/joml/Vector3fc;)F", remap = false))
     private static float redirect$blueband_dot(final Vector3f instance, final Vector3fc v, final Operation<Float> original) {
-        if (!ChlorideConfig.fog.blueBand) return 0;
+        if (!ChlorideConfig.world.fog.blueBand) return 0;
         return original.call(instance, v);
     }
 
     @WrapOperation(method = "setupColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;getRainLevel(F)F"))
     private static float redirect$blueband_getRainLevel(final ClientLevel instance, final float v, final Operation<Float> original) {
-        if (!ChlorideConfig.fog.blueBand) return 0;
+        if (!ChlorideConfig.world.fog.blueBand) return 0;
         return original.call(instance, v);
     }
 
     @WrapOperation(method = "setupColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;getThunderLevel(F)F"))
     private static float redirect$blueband_getThunderLevel(final ClientLevel instance, final float v, final Operation<Float> original) {
-        if (!ChlorideConfig.fog.blueBand) return 0;
+        if (!ChlorideConfig.world.fog.blueBand) return 0;
         return original.call(instance, v);
     }
 }

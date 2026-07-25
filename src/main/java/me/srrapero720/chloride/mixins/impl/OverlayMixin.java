@@ -35,7 +35,7 @@ public abstract class OverlayMixin {
 
     @Redirect(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/metrics/profiling/MetricsRecorder;isRecording()Z"))
     private boolean redirect$renderDebug(final MetricsRecorder instance) {
-        return this.level == null ? instance.isRecording() : ChlorideConfig.fpsDisplay.systemDetails.gpu() || instance.isRecording();
+        return this.level == null ? instance.isRecording() : ChlorideConfig.overlay.fps.systemDetails.gpu() || instance.isRecording();
     }
 
     @Redirect(method = "runTick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;gpuUtilization:D", opcode = Opcodes.PUTFIELD))

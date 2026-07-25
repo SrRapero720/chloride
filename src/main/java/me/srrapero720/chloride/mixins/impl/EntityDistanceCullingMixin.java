@@ -41,9 +41,9 @@ public class EntityDistanceCullingMixin {
         @Redirect(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;entitiesForRendering()Ljava/lang/Iterable;"))
         public Iterable<Entity> redirect$entitiesForRendering(final ClientLevel instance) {
             // UNLIMITED
-            if (ChlorideConfig.culling.entityLimit >= 512) return instance.entitiesForRendering();
+            if (ChlorideConfig.entities.culling.entityLimit >= 512) return instance.entitiesForRendering();
             // NONE
-            if (ChlorideConfig.culling.entityLimit <= 0) return Collections.emptyList();
+            if (ChlorideConfig.entities.culling.entityLimit <= 0) return Collections.emptyList();
 
             // GET ALL ENTITIES
             final List<Entity> copy = new ArrayList<>();
@@ -55,10 +55,10 @@ public class EntityDistanceCullingMixin {
             copy.sort(EntityCulling.DISTANCE_COMPARATOR);
 
             // LIMIT ENTITIES
-            final List<Entity> limited = new ArrayList<>(ChlorideConfig.culling.entityLimit);
+            final List<Entity> limited = new ArrayList<>(ChlorideConfig.entities.culling.entityLimit);
             for (final Entity entity: copy) {
                 limited.add(entity);
-                if (limited.size() >= ChlorideConfig.culling.entityLimit) break;
+                if (limited.size() >= ChlorideConfig.entities.culling.entityLimit) break;
             }
 
             return limited;
@@ -74,13 +74,13 @@ public class EntityDistanceCullingMixin {
             final int distX;
             final MobCategory category = entity.getType().getCategory();
             if (category == MobCategory.MONSTER) {
-                if (!ChlorideConfig.culling.monsters) return;
-                distY = ChlorideConfig.culling.monsterDistanceY;
-                distX = ChlorideConfig.culling.monsterDistanceX;
+                if (!ChlorideConfig.entities.culling.monsters) return;
+                distY = ChlorideConfig.entities.culling.monsterDistanceY;
+                distX = ChlorideConfig.entities.culling.monsterDistanceX;
             } else {
-                if (!ChlorideConfig.culling.entities) return;
-                distY = ChlorideConfig.culling.entityDistanceY;
-                distX = ChlorideConfig.culling.entityDistanceX;
+                if (!ChlorideConfig.entities.culling.entities) return;
+                distY = ChlorideConfig.entities.culling.entityDistanceY;
+                distX = ChlorideConfig.entities.culling.entityDistanceX;
             }
 
             final boolean isWhitelisted = ((IRenderableEntity) entity.getType()).chloride$whitelisted();
@@ -112,7 +112,7 @@ public class EntityDistanceCullingMixin {
                 return false;
             }
 
-            this.chloride$whitelisted = EntityCulling.isWhitelisted(resource, this.getCategory() == MobCategory.MONSTER ? ChlorideConfig.culling.monsterWhitelist : ChlorideConfig.culling.entityWhitelist);
+            this.chloride$whitelisted = EntityCulling.isWhitelisted(resource, this.getCategory() == MobCategory.MONSTER ? ChlorideConfig.entities.culling.monsterWhitelist : ChlorideConfig.entities.culling.entityWhitelist);
             this.chloride$checked = true;
 
             LOGGER.debug(e$IT,"Computed Entity whitelist with type {} for {}-{}", this.getCategory().name(), resource.toString(), this.chloride$whitelisted);
@@ -136,14 +136,14 @@ public class EntityDistanceCullingMixin {
 
         @Inject(at = @At("HEAD"), method = "render", cancellable = true)
         public <E extends BlockEntity> void render(final E tile, final float val, final PoseStack matrix, final MultiBufferSource bufferSource, final CallbackInfo ci) {
-            if (!ChlorideConfig.culling.tileEntities) return;
+            if (!ChlorideConfig.entities.culling.tileEntities) return;
 
             final boolean isWhitelisted = ((IRenderableEntity) tile.getType()).chloride$whitelisted();
             // IF IT NOT WHITELISTED AND (DISTX AND DISTY IS ZERO OR THE TILE IS NOT IN RANGE)
             // CANCEL RENDERING
-            if (!isWhitelisted && (ChlorideConfig.culling.tileEntityDistanceY + ChlorideConfig.culling.tileEntityDistanceX == 0 || !EntityCulling.isEntityInRange(tile, this.camera.getPosition(),
-                    ChlorideConfig.culling.tileEntityDistanceY,
-                    ChlorideConfig.culling.tileEntityDistanceX)
+            if (!isWhitelisted && (ChlorideConfig.entities.culling.tileEntityDistanceY + ChlorideConfig.entities.culling.tileEntityDistanceX == 0 || !EntityCulling.isEntityInRange(tile, this.camera.getPosition(),
+                    ChlorideConfig.entities.culling.tileEntityDistanceY,
+                    ChlorideConfig.entities.culling.tileEntityDistanceX)
             )) {
                 ci.cancel();
             }
@@ -164,7 +164,7 @@ public class EntityDistanceCullingMixin {
                 LOGGER.warn(e$IT, "BlockEntity key for '{}' is null, not whitelisting a broken mod block", this.getClass().getName());
                 return false;
             }
-            this.chloride$whitelisted = EntityCulling.isWhitelisted(resource, ChlorideConfig.culling.tileEntityWhitelist);
+            this.chloride$whitelisted = EntityCulling.isWhitelisted(resource, ChlorideConfig.entities.culling.tileEntityWhitelist);
             this.chloride$checked = true;
 
             LOGGER.debug(e$IT,"Computed BlockEntity whitelist for {}-{}", resource.toString(), this.chloride$whitelisted);
