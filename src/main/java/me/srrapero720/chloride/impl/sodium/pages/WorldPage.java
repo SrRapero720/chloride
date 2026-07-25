@@ -124,6 +124,13 @@ public class WorldPage {
                         .setStorageHandler(STORAGE)
                         .setDefaultValue(true)
                         .setBinding(v -> ChlorideConfig.world.farSkybox = v, () -> ChlorideConfig.world.farSkybox))
+                .addOption(b.createBooleanOption(Chloride.id("pistonPush"))
+                        .setName(Component.translatable("chloride.world.piston_push.title"))
+                        .setTooltip(Component.translatable("chloride.world.piston_push.desc"))
+                        .setStorageHandler(STORAGE)
+                        .setImpact(OptionImpact.LOW)
+                        .setDefaultValue(true)
+                        .setBinding(v -> ChlorideConfig.world.pistonPush = v, () -> ChlorideConfig.world.pistonPush))
         );
 
         // World "amazings" (chunk fade) — kept disabled, mirrors the previous behaviour.

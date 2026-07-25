@@ -140,6 +140,8 @@
   "chloride.player.clear_spectator.desc": "Blocks vanilla post-process shaders, like the creeper/enderman spectator effects",
 
   "chloride.world": "World",
+  "chloride.world.piston_push.title": "Piston Push",
+  "chloride.world.piston_push.desc": "If disabled, pistons snap to their final state without rendering the moving blocks",
   "chloride.world.blueband.title": "Sky Blue band",
   "chloride.world.blueband.desc": "If disabled, removed the Blue Band effect in all dimensions",
   "chloride.world.fog.title": "Global Sky Fog",

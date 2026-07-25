@@ -140,6 +140,8 @@
   "chloride.player.clear_spectator.desc": "Bloquea los shaders de post-proceso vanilla, como los efectos de espectador del creeper/enderman",
 
   "chloride.world": "Entorno",
+  "chloride.world.piston_push.title": "Empuje de Pistones",
+  "chloride.world.piston_push.desc": "Si se deshabilita, los pistones saltan a su estado final sin renderizar los bloques en movimiento",
   "chloride.world.blueband.title": "Banda Azul del Mundo",
   "chloride.world.blueband.desc": "Si se deshabilita, elimina la banda azul del mundo en todas las dimensiones",
   "chloride.world.fog.title": "Niebla Global",
