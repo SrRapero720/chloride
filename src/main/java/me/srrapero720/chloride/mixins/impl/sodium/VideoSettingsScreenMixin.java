@@ -1,7 +1,9 @@
 package me.srrapero720.chloride.mixins.impl.sodium;
 
+import me.srrapero720.chloride.ChlorideConfig;
 import me.srrapero720.chloride.impl.SettingsScreens;
-import me.srrapero720.chloride.impl.sodium.screens.StyleSwitchButton;
+import me.srrapero720.chloride.impl.sodium.controls.StyleSwitchButton;
+import net.caffeinemc.mods.sodium.client.config.structure.OptionPage;
 import net.caffeinemc.mods.sodium.client.gui.Layout;
 import net.caffeinemc.mods.sodium.client.gui.VideoSettingsScreen;
 import net.caffeinemc.mods.sodium.client.util.Dim2i;
@@ -13,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(VideoSettingsScreen.class)
 public class VideoSettingsScreenMixin {
@@ -29,6 +32,14 @@ public class VideoSettingsScreenMixin {
     @ModifyArg(method = "updateSearchWidgetWidth", at = @At(value = "INVOKE", target = "Lnet/caffeinemc/mods/sodium/client/gui/widgets/SearchWidget;updateWidgetWidth(I)V"))
     private int chloride$shrinkSearchBar(final int width) {
         return width - Layout.BUTTON_SHORT - Layout.INNER_MARGIN;
+    }
+
+    // THE PERSISTED STYLE DECIDES WHICH SCREEN THE VIDEO SETTINGS BUTTON OPENS; SODIUM'S OWN IS THE FALLBACK
+    @Inject(method = "createScreen(Lnet/minecraft/client/gui/screens/Screen;Lnet/caffeinemc/mods/sodium/client/config/structure/OptionPage;)Lnet/minecraft/client/gui/screens/Screen;",
+            at = @At("HEAD"), cancellable = true)
+    private static void chloride$openStyledScreen(final Screen current, final OptionPage page, final CallbackInfoReturnable<Screen> cir) {
+        final SettingsScreens.Style style = ChlorideConfig.ui.settingsScreen;
+        if (style != SettingsScreens.Style.SODIUM) cir.setReturnValue(style.screen(current));
     }
 
     // ADDED AT TAIL SO THE BUTTON (AND ITS TOOLTIP) RENDERS ABOVE EVERY OTHER WIDGET

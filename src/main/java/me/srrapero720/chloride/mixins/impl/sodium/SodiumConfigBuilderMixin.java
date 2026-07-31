@@ -6,6 +6,7 @@ import me.srrapero720.chloride.ChlorideConfig;
 import me.srrapero720.chloride.api.events.FastModelSettingsUpdate;
 import me.srrapero720.chloride.impl.Borderless;
 import me.srrapero720.chloride.impl.FastBlocks;
+import me.srrapero720.chloride.impl.sodium.OptionInsertions;
 import net.caffeinemc.mods.sodium.api.config.option.OptionFlag;
 import net.caffeinemc.mods.sodium.api.config.option.OptionImpact;
 import net.caffeinemc.mods.sodium.api.config.structure.ConfigBuilder;
@@ -13,9 +14,12 @@ import net.caffeinemc.mods.sodium.api.config.structure.OptionPageBuilder;
 import net.caffeinemc.mods.sodium.client.gui.SodiumConfigBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.NeoForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.PERCENT;
 import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.STORAGE;
@@ -30,10 +34,11 @@ import static me.srrapero720.chloride.Chloride.id;
 @Mixin(SodiumConfigBuilder.class)
 public class SodiumConfigBuilderMixin {
 
-    @ModifyReturnValue(method = "buildGeneralPage", at = @At("RETURN"))
-    private OptionPageBuilder chloride$general(final OptionPageBuilder page, @Local(argsOnly = true) final ConfigBuilder b) {
-        return page.addOptionGroup(b.createOptionGroup()
-                .addOption(b.createBooleanOption(id("disableBorderlessOptimizations"))
+    // THE BORDERLESS TWEAK BELONGS NEXT TO THE RESOLUTION IT AFFECTS, SO IT IS QUEUED HERE AND SLOTTED IN WHILE SODIUM IS STILL FILLING THAT GROUP.
+    @Inject(method = "buildGeneralPage", at = @At("HEAD"))
+    private void chloride$queueBorderless(final ConfigBuilder b, final CallbackInfoReturnable<OptionPageBuilder> callback) {
+        OptionInsertions.after(ResourceLocation.parse("sodium:general.fullscreen_resolution"),
+                b.createBooleanOption(id("disableBorderlessOptimizations"))
                         .setName(Component.translatable("chloride.general.screen.borderless.optimization"))
                         .setTooltip(Component.translatable("chloride.general.screen.borderless.optimization.desc"))
                         .setStorageHandler(STORAGE)
@@ -42,7 +47,12 @@ public class SodiumConfigBuilderMixin {
                         .setBinding(v -> {
                             ChlorideConfig.fullscreen.disableBorderlessOptimizations = v;
                             Borderless.reloadFullscreenMode();
-                        }, () -> ChlorideConfig.fullscreen.disableBorderlessOptimizations))
+                        }, () -> ChlorideConfig.fullscreen.disableBorderlessOptimizations));
+    }
+
+    @ModifyReturnValue(method = "buildGeneralPage", at = @At("RETURN"))
+    private OptionPageBuilder chloride$general(final OptionPageBuilder page, @Local(argsOnly = true) final ConfigBuilder b) {
+        return page.addOptionGroup(b.createOptionGroup()
                 .addOption(b.createIntegerOption(id("screenEffectScale"))
                         .setName(Component.translatable("options.screenEffectScale"))
                         .setTooltip(Component.translatable("options.screenEffectScale.tooltip"))

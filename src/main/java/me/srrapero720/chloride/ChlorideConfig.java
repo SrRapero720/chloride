@@ -160,8 +160,8 @@ public class ChlorideConfig {
         @Spec.Field public boolean fastLanguageReload = true;
 
         @Spec.Field
-        @Comment("Settings screen style; non-sodium styles are WIP and only open on dev environments")
-        public SettingsScreens.Style settingsScreen = SettingsScreens.Style.SODIUM;
+        @Comment("Settings screen style; TEXTRUE and POPULI are WIP and only open on dev environments")
+        public SettingsScreens.Style settingsScreen = SettingsScreens.Style.CHLORIDE;
 
         @Spec.Field
         @Comment("Shows item id and durability on tooltips without F3+H")

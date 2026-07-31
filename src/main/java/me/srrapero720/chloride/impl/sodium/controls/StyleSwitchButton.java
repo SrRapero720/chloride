@@ -1,4 +1,4 @@
-package me.srrapero720.chloride.impl.sodium.screens;
+package me.srrapero720.chloride.impl.sodium.controls;
 
 import me.srrapero720.chloride.impl.SettingsScreens;
 import me.srrapero720.chloride.impl.sodium.SodiumFeatures;
@@ -11,11 +11,16 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 public class StyleSwitchButton extends FlatButtonWidget {
-    private static final Component COMING_SOON = Component.translatable("chloride.settings.coming_soon");
+    private final Component tooltip;
 
     public StyleSwitchButton(final Dim2i dim, final SettingsScreens.Style current, final Screen prev) {
         // NULL LABEL: THE DEFAULT THEME ALREADY MATCHES THE SEARCH BAR'S TRANSLUCENT BLACK FILL
         super(dim, null, () -> SettingsScreens.next(current, prev), true, false);
+        this.tooltip = Component.translatable("chloride.settings.design", current.title());
+    }
+
+    public Component tooltip() {
+        return this.tooltip;
     }
 
     @Override
@@ -31,15 +36,9 @@ public class StyleSwitchButton extends FlatButtonWidget {
             final int y = this.getLimitY() + 3;
             graphics.pose().pushPose();
             graphics.pose().translate(0.0f, 0.0f, 400.0f);
-            graphics.fill(x, y, x + this.font.width(COMING_SOON) + 8, y + this.font.lineHeight + 8, Colors.BACKGROUND_OVERLAY);
-            this.drawString(graphics, COMING_SOON, x + 4, y + 4, Colors.FOREGROUND);
+            graphics.fill(x, y, x + this.font.width(this.tooltip) + 8, y + this.font.lineHeight + 8, Colors.BACKGROUND_OVERLAY);
+            this.drawString(graphics, this.tooltip, x + 4, y + 4, Colors.FOREGROUND);
             graphics.pose().popPose();
         }
-    }
-
-    @Override
-    protected void doAction() {
-        // PRODUCTION: NO CLICK SOUND, NO ACTION; THE SWITCH IS DEV-ONLY UNTIL THE SCREENS SHIP
-        if (SettingsScreens.DEV) super.doAction();
     }
 }

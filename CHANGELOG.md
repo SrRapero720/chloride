@@ -1,3 +1,35 @@
+# RELEASE 1.8.2
+- [✨] Added Coordinates overlay (enabled by default)
+  - ℹ️ Modes: `NO`, `SIMPLE`, `CORDS+ROT`, `CORDS+FACING`, `ALL`
+  - ℹ️ Displays clean integers with colored axes (X red, Y green, Z blue), rotation as "X 0° | Y 0°" and the cardinal facing
+  - ℹ️ Rotation/facing can render on their own line, with their own transparency
+- [✨] Added Biome overlay
+  - ℹ️ Tints the biome name by category: cold cyan, plains/forest light green, jungle/swamp dark green, ocean royal blue, hot orange, nether red-orange, cherry pink, mushroom brown
+- [✨] Added Running overlay (displays "Sprinting" while sprinting, with fade in/out)
+- [✨] Added "Light on Change" for Biome and Running overlays (full opacity for 3 seconds on changes, then a 0.75s ease-out fade back)
+- [✨] Added active engine display (displays "... | GPU 72% (OpenGL)")
+- [✨] Added max memory in GB (displays "... | MEM 72% (8.5GB)")
+- [✨] Added transparency, scale (`50%`-`200%`) and contrast (`NONE`, `SHADOW`, `BACKGROUND`) settings for overlays
+- [✨] Added Adaptive V-Sync (V-Sync option is now `OFF`, `ON`, `ADAPTIVE`)
+  - ℹ️ Adaptive tears instead of stalling when a frame arrives late; behaves as `ON` if the driver lacks EXT_swap_control_tear
+- [✨] Added Fast Sneak (removes the camera height smoothing when sneaking)
+- [✨] Added Clear Spectator (blocks vanilla post-process shaders like creeper/enderman spectator effects)
+- [✨] Added toast toggles (master switch plus Advancement, Recipe, System and Tutorial)
+- [✨] Added persistent Advanced Item Tooltips (like F3+H, but kept across restarts)
+- [✨] Added persistent Profiler Pie (keeps the profiler pie chart always on screen)
+- [✨] Added Piston Push toggle (disable it to skip the piston moving-block render)
+- [✨] Exposed vanilla Distortion Effects and FOV Effects sliders in the video settings
+- [🛠️] Moved overlay settings (fps, cords, biome, running) into a new Overlay Settings page
+- [🛠️] Added a new Player Settings page (Fast Sneak, FOV Effects, Clear Spectator)
+- [🛠️] Reorganized the client config into nested sections and groups (old values are not migrated)
+- [🛠️] Prepared the settings screen for future design styles
+- [✨] Added the TexTrue settings screen with a searchable mod and page sidebar
+- [🛠️] Improved Populi navigation with adaptive mod details and clearer selected pages
+- [🛠️] Unified the Chloride, Populi and TexTrue settings layouts and scrollbars
+- [✨] Added per-setting undo and reset-to-default buttons
+- [🐛] Fixed the TexTrue and Populi settings screen styles opening without controls
+- [🐛] Fixed severe frame drops when moving high-polling mice across menus
+
 # RELEASE 1.8.1
 - [🐛] Fixed chloride mixins for Leaves Block collides with sodiums mixins (only warns, but breaks our culling)
 - [🐛] Fixed Nametag of item entities never got renderer despite being enabled on settings
@@ -141,182 +173,3 @@
 - [❌] (1.18-1.19) Removed ZUME integration (prevent crashes with modern zume)
 - [🌐] Updated translations (I forgot to rebase again)
   - [🍾] Updated Russian translation (by mpustovoi)
-
-# RELEASE 1.2.9
-- [🛠️] Removed optional dependency of Textrues Embeeddium Options
-- [🛠️] Bumped zume version range (and added support for zume 0.19)
-- [🛠️] Removed mixins related to embeddium (now uses embeddium events)
-- [🛠️] Deprecated zume config screen in favor of future zume releases (And Embeddium++Additions)
-- [🌐] Updated translations
-  - [🍾] Updated Russian translation (by mpustovoi)
-
-# RELEASE 1.2.8
-- [🐛] Fixed weird crash with some mods unregistering their block entities
-- [🛠️] Marked Textrues Embeeddium Options as a optional dependency (in favor of future Embeddium versions)
-- [🔥] Added "leaves culling"
-  - ℹ️ Culls leaves faces when are around other leaves
-  - ℹ️ Only culls leaves of the same type (oak leaves cannot cull dark oak leaves)
-  - ℹ️ At the moment only available ALL and OFF
-- [🛠️] You didn't feel the general page too flooded?
-  - 🛠️ Moved the "display FPS" options to Metrics page (spoiler)
-- [🛠️] Tweaked FPS display code
-  - 🛠️ Doesn't impact the behavior (at all), just simplification
-  - 🛠️ the GPU usage update was forced to had a cooldown like the current FPS.
-If for some reason a weird mod hardly depends on the immediate gpu usage rate, please report to me :P 
-- [🌐] Updated translations (git lost track of master branch and "rebase" never rebased the PRs): 
-  - [🍜] Updated Simplified Chinese translation (by qznfbnj)
-  - [🍾] Updated Russian translation (by mpustovoi)
-
-# RELEASE 1.2.7
-- [🐛] Fix REI is not working
-- [🐛] Disabled FastModels
-  - 🛠️ The config field is renamed, and options in video settings are disabled too
-- [🔥] Added "disable NameTag rendering"
-  - ℹ️ Let you not render names on entities, players and item frames.
-  - ℹ️ Placed in Quality tab
-- [🔥] Added "blueBand" toggle option
-  - ℹ️ Let you disable the blue gradient, making skies flat-colored
-  - ℹ️ Placed in Quality page
-- [🐛] Fix wrong AVG calculation (again) 
-
-# RELEASE 1.2.6
-- [🛠️] Compat fix for zume 0.18 (nojil, please slowdown)
-  - 🛠️ Version was restricted to above 0.18 and below 0.19
-- [🐛] Make static beds and chests models/textures as a integrated resourcepack
-  - 🐛 This avoid invisible models/textures for mods with some weird reliance on MC resources.
-- [🐛] Fix wrong AVG display on initial games
-  - 🛠️ AVG was also tweaked to store 18 values instead of 14
-- [🔥] Added EMI/REI support for "Hide JEI until searching" feature
-- [🛠️] Revoked license (now is ARR)
-
-# RELEASE 1.2.5
-- [🛠️] Removed embedded version of Zume
-  - 🛠️ Now is an optional dependency (can be removed)
-- [🔥] Added Zoom options on Video settings
-  - 🔥 Now you can configure all options of Zume easier and faster.
-- [🛠️] Added crash warning for Xenon (avoid any weird report)
-- [🐛] Fixed hide JEI option can't be used if Flywheel is enabled
-
-# RELEASE 1.2.4
-- [🛠️] Removed ported code of Lamb Dynamic Lights
-  - Will be back a new implementation for 1.3.0, more powerful and efficient.
-- [🔥] Featured [ZUME](https://www.curseforge.com/minecraft/mc-mods/zume/files/5082090) embedded
-  - 🔥 Zoom key is back! powered by [ZUME](https://www.curseforge.com/minecraft/mc-mods/zume/files/5082090)
-  - 🔥 Press [C] to zoom
-  - 🛠️ Can be configured zoom behavior on video settings
-- [🐛] Fixed entity whitelist isn't working
-- [🛠️] Moved default ignored entities and tile entities to config defaults
-- [🛠️] Fixed true darkness is inverted
-- [⚡] Optimized true darkness code
-
-# HOTFIX 1.2.3
-Minor things
-- [🐛] Fixed F11 borderless doesn't work
-  - 🔥 Can replace Fullscreen with Borderless
-- [🛠️] Tweak mixin page
-  - 🖋️ Renamed page to "others"
-  - 👟 Make options not longer request game restart
-  - 🛠️ Moved config entries to default config file
-    - By default, it will delete old ``embeddium++mixins.toml`` file, because it was no longer used
-- [🛠️] Enabled shadows on text by default again (temporal workaround)
-- [🛠️] Now uses MixinExtra along some mixins (temporal JarInJar until embeddedt includes it on Embeddium)
-- [🔥] Updated translation(s)
-  - 🌮 Mexican spanish
-
-# RELEASE 1.2.2
-Things that I may forget
-
-- [🐛] Fixed fps text and shadow box rendering multiple times breaking transparency
-  - [🔒] Closes [#26](https://github.com/SrRapero720/EmbeddiumPlus/issues/26), [#24](https://github.com/SrRapero720/EmbeddiumPlus/issues/24)
-- [🐛] \[1.18.2\] Removed performance Mixins
-  - ℹ️ These mixins causes more problems than solutions, even make performance worse (after some deep benches and possible fixes)
-- [🍜] Updated Simplified Chinese translation (by qznfbnj)
-
-# RELEASE 1.2.1
-Well, we are no longer redundant, but we have redudant code :)
-
-- [🛠️] Optimized FPS Display feature (fixes [#20](https://github.com/SrRapero720/EmbeddiumPlus/issues/20) and [#21](https://github.com/SrRapero720/EmbeddiumPlus/issues/21))
-  - 🛠️ Removed rendering mixins (using forge events)
-  - 🐛 Fixed FPS Chart is not rendering
-  - 🐛 [18.2-19.2] Fixed crashes related to that feature 
-  - 👟 Optimizes rendering speeds (sweet)
-  - 🔥 FPS, MIN, AVG, GPU, RAM texts are translatable
-  - 🔥 Now texts are better colored
-- [🛠️] Optimized EntityCulling feature (fixes [#19](https://github.com/SrRapero720/EmbeddiumPlus/issues/19))
-  - 🐛 Fixed Block Entities never stop culled disabling on config
-  - 🐛 Fixed WATERFrAMES Block Entities got culled
-  - 🔥 Added whitelist for Block Entities
-  - 👟 Speed up whitelist check for Entities and Block Entities
-    - ℹ️ When an Entity matches with the first whitelist value, this never got marked as "checked," checking it indefinitely
-- [🐛] Fixed DynLights on entities (like GlowSquid) are not glowing (closes [#23](https://github.com/SrRapero720/EmbeddiumPlus/issues/23))
-  - 🐛 Also added missing resources for the proper functionality of DynLights
-- [🔥] \[1.18.2\] Added a new performance feature: Replace HashMap with a Object2ObjectArrayMap
-  - 🛠️ Can be disabled on mixins page
-- [🛠️] \[1.18.2\] Make RenderType lookup performance option toggleable on mixins page
-  - ℹ️ This performance feature wasn't available on 1.19.2 because Moyank already adds it.
-- [🔥] Updated translations
-  - 🍾 Russian translation
-  - 🌮 Mexican spanish
-
-# RELEASE 1.2.0
-The performance and overhaul update... just to be less "redundant"... or what do you think LunaPixel?
-I am redundant now?
-
-- [🐛] Removed ``ExtendedServerViewDistanceMixin``
-  - 🛠️ Some reports culprit it causes a GPU MemoryLeak. I suggest using other alternatives like [Farsight](https://legacy.curseforge.com/minecraft/mc-mods/farsight)
-- [🔥] Added "FastChest" feature, which increases FPS in hundreds on chest rooms
-  - 🐛 It can't be used with Flywheel + Instancing or Batching backend.
-  - ℹ️ Placed on Embeddium's performance page
-  - 👟 Disabled if Enhanced Block Entities are installed
-- [🛠️] Increased range of DynLights from 7.2 to 12 (workarround for [#8](https://github.com/SrRapero720/EmbeddiumPlus/issues/8))
-- [🔥] Added "FastBeds" feature, which increases FPS in bedrooms
-  - ℹ️ Why do you in the first place have a lot of beds?
-  - ℹ️ Placed on Embeddium's performance page
-- [🔥] Added "Font Shadows" toggle
-  - ℹ️ Let you disable font shadows, giving texts on minecraft a flat-style
-  - 🛠️ Increases FPS on screens with a lot of text
-  - ℹ️ Placed on Embeddium's performance page
-- [🛠️] Added missing options of True darkness into video settings
-  - ℹ️ These options exist since port was made, but it never got added into video settings
-  - 🛠️ Now are more accessible and contains a bunch of configurations
-- [🛠️] Added Mixins page to disable Emb++ features
-  - 🛠️ Can disable F11 key mixin (which adds the borderless option)
-  - 🛠️ Can disable LanguageReload mixin feature
-- [🔥] Overhaul Display FPS feature
-  - 🔥 Now can be change position between LEFT, CENTER, RIGHT (left by default)
-  - 🔥 Added option to also show GPU and RAM usage in percent
-  - 🔥 Added option to render text with a shadow box
-  - 🛠️ Now texts are colored based on how bad are your FPS and GPU/RAM usage.
-  - 🛠️ [1.18.2] Backported Mojang GPU usage profiling (added on F3 overlay and FPS Display)
-  - ℹ️ Placed on Embeddium's general page
-- [🔥] Redistributed config
-  - 👟 Now it was easier to find certain options like "Display FPS" that was placed in general
-  - 🔥 Adds "Quality++" page, containing all extra quality settings
-  - 🔥 Adds "True Darkness" page, containing darkness features
-  - 🔥 Adds "Entity Culling" page, which contains all render limit for BE and entities
-  - ℹ️ Now mod depends on [TexTure's Embeddium Options](https://www.curseforge.com/minecraft/mc-mods/textrues-embeddium-options)
-- [🔥] Changing language no longer reloads all resources
-  - 🛠️ A QoL change that increases language changing
-- [🛠️] Rewrote configs
-  - 🛠️ May you notice a 1~5 extra FPS. Thank me later
-- [🔥] Added fresh localization languages
-  - 🍜 Simplified Chinese (thanks to Wheatley11 and qznfbnj)
-  - 🥐 French (thanks to Myuui)
-  - 🍾 Russia (thanks to CatAndPaste)
-  - 🌮 Mexican Spanish (thanks to ME, that's right, I am mexican)
-
-# RELEASE 1.1.0
-Note: The Next version plan was focused on optimised DynLights, cleanup Emb++ and Expand TrueDarnkess
-
-- [🔥] Embedded DynamicLights on Embeddium++ (i fork this mod just to do this damn joke)
-  - ⚠️ That means you need to REMOVE Magnesium/Rubidium DynamicLights
-  - 🔥 Adds "Faster" speed option
-- [🛠️] EntityCulling whitelist optimized
-  - 👟 Works much faster than before
-  - 🛠️ Fixes a memory leak (check [#3](https://github.com/SrRapero720/EmbeddiumPlus/issues/3))
-  - 🔥 Now supports wildcards (``modid:*`` ignores all entities of that mod)
-- [🛠️] Fixed you can't go back to windowed screen after switching to Borderless/FullScreen
-- [🔥] Added back JEI Overlay hide when you are not searching
-  - ℹ️ Message for mezz: is disabled by default :) don't worry
-- [🛠️] All options screen text of Emb++ is now localized
-  - ℹ️ You can contribute with translation [here](https://github.com/SrRapero720/EmbeddiumPlus/blob/1.20/src/main/resources/assets/embeddiumplus/lang/en_us.json)

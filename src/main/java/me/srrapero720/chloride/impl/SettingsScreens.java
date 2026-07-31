@@ -1,32 +1,43 @@
 package me.srrapero720.chloride.impl;
 
 import me.srrapero720.chloride.ChlorideConfig;
+import me.srrapero720.chloride.impl.sodium.salty.SaltyOptions;
 import me.srrapero720.chloride.impl.sodium.screens.ChlorideSettingsScreen;
 import me.srrapero720.chloride.impl.sodium.screens.PopuliSettingsScreen;
-import me.srrapero720.chloride.impl.sodium.screens.TexTrueSettingsScreen;
+import me.srrapero720.chloride.impl.sodium.screens.ReeseSettingsScreen;
+import net.caffeinemc.mods.sodium.client.config.ConfigManager;
 import net.caffeinemc.mods.sodium.client.gui.VideoSettingsScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.neoforged.fml.loading.FMLEnvironment;
+import net.minecraft.network.chat.Component;
+
+import java.util.Locale;
 
 /**
- * Alternative settings screen styles for Sodium's video settings. The non-sodium styles are
- * work-in-progress canvases, so switching between them is locked behind dev environments.
+ * Settings screen styles for Sodium's video settings. Sodium's own screen and Chloride's are selectable
+ * anywhere; alternative styles remain locked to dev environments while they are polished.
  */
 public class SettingsScreens {
-    /** True on dev environments; the custom screen styles only activate behind this flag. */
-    public static final boolean DEV = !FMLEnvironment.production;
+    /** True while the active style is one of Chloride's, the only ones that draw the extended option types. */
+    public static boolean extended() {
+        // A STYLE THAT CANNOT OPEN (A HAND-EDITED CONFIG ON PRODUCTION) FALLS BACK TO SODIUM'S SCREEN, AND SO DO ITS PAGES
+        final Style style = ChlorideConfig.ui.settingsScreen;
+        return style != Style.SODIUM;
+    }
 
     /**
-     * Switches from the current settings screen style to the next one, persisting the choice.
-     * No-op in production while the custom screens are under construction.
+     * Switches from the current settings screen style to the next selectable one, persisting the choice and
+     * rebuilding Sodium's config, since the pages a style gets are decided while they are being built.
      */
     public static void next(final Style current, final Screen prev) {
-        if (!DEV) return;
         final Style[] styles = Style.values();
-        final Style next = styles[(current.ordinal() + 1) % styles.length];
+        Style next = current;
+        next = styles[(next.ordinal() + 1) % styles.length];
+
         ChlorideConfig.ui.settingsScreen = next;
         ChlorideConfig.write();
+        SaltyOptions.clear();
+        ConfigManager.registerConfigsLate();
         Minecraft.getInstance().setScreen(next.screen(prev));
     }
 
@@ -38,9 +49,13 @@ public class SettingsScreens {
             return switch (this) {
                 case SODIUM -> VideoSettingsScreen.createScreen(prev);
                 case CHLORIDE -> new ChlorideSettingsScreen(prev);
-                case TEXTRUE -> new TexTrueSettingsScreen(prev);
+                case TEXTRUE -> new ReeseSettingsScreen(prev);
                 case POPULI -> new PopuliSettingsScreen(prev);
             };
+        }
+
+        public Component title() {
+            return Component.translatable("chloride.settings.design." + this.name().toLowerCase(Locale.ROOT));
         }
     }
 }

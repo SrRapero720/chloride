@@ -2,8 +2,10 @@ package me.srrapero720.chloride.impl.sodium.pages;
 
 import me.srrapero720.chloride.Chloride;
 import me.srrapero720.chloride.ChlorideConfig;
+import me.srrapero720.chloride.api.config.SaltyConfigBuilder;
 import me.srrapero720.chloride.impl.Darkness;
 import net.caffeinemc.mods.sodium.api.config.structure.ConfigBuilder;
+import net.caffeinemc.mods.sodium.api.config.structure.OptionGroupBuilder;
 import net.caffeinemc.mods.sodium.api.config.structure.OptionPageBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +36,7 @@ public class DarknessPage {
                         .setBinding(v -> ChlorideConfig.darkness.onNoSkyLight = v, () -> ChlorideConfig.darkness.onNoSkyLight))
         );
 
-        page.addOptionGroup(b.createOptionGroup()
+        final OptionGroupBuilder dimensions = b.createOptionGroup()
                 .addOption(b.createBooleanOption(Chloride.id("darknessByDefault"))
                         .setName(Component.translatable("chloride.darkness.others.title"))
                         .setTooltip(Component.translatable("chloride.darkness.others.desc"))
@@ -46,8 +48,17 @@ public class DarknessPage {
                         .setTooltip(Component.translatable("chloride.darkness.overworld.desc"))
                         .setStorageHandler(STORAGE)
                         .setDefaultValue(true)
-                        .setBinding(v -> ChlorideConfig.darkness.onOverworld = v, () -> ChlorideConfig.darkness.onOverworld))
-        );
+                        .setBinding(v -> ChlorideConfig.darkness.onOverworld = v, () -> ChlorideConfig.darkness.onOverworld));
+        // THE WHITELIST ONLY EXISTS ON THE SCREENS THAT CAN DRAW A LIST CONTROL
+        if (SaltyConfigBuilder.available()) {
+            dimensions.addOption(SaltyConfigBuilder.of(b).createIdentifierListOption(Chloride.id("darknessDimensionWhitelist"))
+                    .setName(Component.translatable("chloride.darkness.others.whitelist.title"))
+                    .setTooltip(Component.translatable("chloride.darkness.others.whitelist.desc"))
+                    .setStorageHandler(STORAGE)
+                    .setDefaultValue(ChlorideConfig.toId())
+                    .setBinding(v -> ChlorideConfig.darkness.dimensionWhitelist = v, () -> ChlorideConfig.darkness.dimensionWhitelist));
+        }
+        page.addOptionGroup(dimensions);
 
         page.addOptionGroup(b.createOptionGroup()
                 .addOption(b.createBooleanOption(Chloride.id("darknessOnNether"))

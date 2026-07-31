@@ -2,9 +2,15 @@ package me.srrapero720.chloride.impl.sodium.pages;
 
 import me.srrapero720.chloride.Chloride;
 import me.srrapero720.chloride.ChlorideConfig;
+import me.srrapero720.chloride.impl.SettingsScreens;
 import net.caffeinemc.mods.sodium.api.config.structure.ConfigBuilder;
+import net.caffeinemc.mods.sodium.api.config.structure.OptionGroupBuilder;
 import net.caffeinemc.mods.sodium.api.config.structure.OptionPageBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
+import java.util.List;
 
 import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.*;
 
@@ -41,8 +47,26 @@ public class ParticlesPage {
                         .setBinding(v -> ChlorideConfig.particles.blockDestroyed = v, () -> ChlorideConfig.particles.blockDestroyed))
         );
 
-        // THE PER-PARTICLE-TYPE TOGGLES LIVE IN ParticleListScreen (EXTERNAL PAGE): ONE SODIUM OPTION PER
-        // REGISTERED PARTICLE TANKED THE WHOLE SETTINGS SCREEN ON BIG MODPACKS (ISSUE #174)
+        // ONE TOGGLE PER REGISTERED PARTICLE. SODIUM'S SCREEN DRAWS EVERY ROW AND CHOKES ON MODPACKS WITH
+        // HUNDREDS OF THEM (ISSUE #174), SO IT KEEPS THE EXTERNAL LIST SCREEN AND ONLY CHLORIDE'S SCREENS,
+        // WHICH CULL OFF-SCREEN ROWS, GET THEM INLINE.
+        if (SettingsScreens.extended()) {
+            final OptionGroupBuilder group = b.createOptionGroup().setName(Component.translatable("chloride.particles.list"));
+            final List<ResourceLocation> disabled = ChlorideConfig.particles.disabled;
+            for (final ResourceLocation id: BuiltInRegistries.PARTICLE_TYPE.keySet().stream().sorted().toList()) {
+                group.addOption(b.createBooleanOption(id)
+                        .setName(Component.literal(id.toString()))
+                        .setTooltip(Component.translatable("chloride.particles.toggle.desc"))
+                        .setStorageHandler(STORAGE)
+                        .setDefaultValue(true)
+                        .setBinding(v -> {
+                            if (v) disabled.remove(id);
+                            else if (!disabled.contains(id)) disabled.add(id);
+                        }, () -> !disabled.contains(id)));
+            }
+            page.addOptionGroup(group);
+        }
+
         return page;
     }
 }

@@ -134,7 +134,9 @@ dependencies {
     waterconfig "com.github.SrRapero720:waterconfig:$waterconfigversion"
     runtimeOnly files(tasks.named('repackWaterConfig'))
 
-    // IRIS: RUNTIME-ONLY, NON-TRANSITIVE (KEEPS ITS BUNDLED SODIUM OUT)
+    // IRIS: NON-TRANSITIVE (KEEPS ITS BUNDLED SODIUM OUT). COMPILE-ONLY FOR THE SHADER PACK INTEGRATION,
+    // WHOSE CLASSES ONLY LOAD BEHIND THE IRIS MIXIN, PLUS RUNTIME SO THE DEV CLIENT ACTUALLY HAS IT
+    compileOnly("maven.modrinth:iris:$irisversion") { transitive = false }
     runtimeOnly("maven.modrinth:iris:$irisversion") { transitive = false }
 
     // SODIUM SHIPS 3 ARTIFACTS: -neoforge (PRODUCTION SHELL: LIBRARY THAT JARJARS THE REAL MOD),
@@ -172,11 +174,27 @@ dependencies {
     }
 }
 
-// ALWAYS RE-EXPAND: GRADLE DOES NOT TRACK EVERY PROJECT PROPERTY AS A TASK INPUT
+// ALWAYS RE-EXPAND: RESOURCE TEMPLATES DEPEND ON GRADLE PROPERTIES OUTSIDE THE SOURCE TREE
+def resourceProperties = [
+        fmlrange         : fmlrange,
+        modlicense       : modlicense,
+        github           : github,
+        modid            : modid,
+        mixin_file_suffix: mixin_file_suffix,
+        modversion       : modversion,
+        modname          : modname,
+        modauthor        : modauthor,
+        modcredits       : modcredits,
+        moddesc          : moddesc,
+        forgerange       : forgerange,
+        minecraftrange   : minecraftrange,
+        sodiumrange      : sodiumrange,
+        modpackformat    : modpackformat
+]
 tasks.processResources.outputs.upToDateWhen { false }
 processResources {
     filesMatching(['META-INF/neoforge.mods.toml', 'custom_packs/**/pack.mcmeta', 'pack.mcmeta']) {
-        expand project.properties
+        expand resourceProperties
     }
 }
 

@@ -1,6 +1,8 @@
 package me.srrapero720.chloride;
 
+import cpw.mods.jarhandling.impl.Jar;
 import me.srrapero720.chloride.impl.Borderless;
+import net.irisshaders.iris.gui.element.ShaderPackSelectionList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;

@@ -46,7 +46,18 @@
     "jei_rei_emi.EmiOverlayMixin",
     "jei_rei_emi.JeiOverlayMixin",
     "jei_rei_emi.ReiOverlayMixin",
+    "iris.IrisConfigMixin",
+    "iris.ShaderPackScreenAccessor",
     "leaves_culling.LeavesBlockMixin",
+    "sodium.ConfigBuilderMixin",
+    "sodium.ControlElementMixin",
+    "sodium.ModOptionsBuilderMixin",
+    "sodium.OptionAccessor",
+    "sodium.OptionBuilderAccessor",
+    "sodium.OptionGroupBuilderAccessor",
+    "sodium.OptionGroupBuilderMixin",
+    "sodium.OptionPageBuilderMixin",
+    "sodium.PageBuilderAccessor",
     "sodium.SodiumConfigBuilderMixin",
     "sodium.VideoSettingsScreenMixin"
   ]
