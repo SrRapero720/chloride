@@ -302,5 +302,7 @@
   "chloride.zoom.desc": "Turns on Zoom feature, can be activated by pressing",
   "chloride.zoom.forbidden": "JustZoom or Zume detected, chloride zoom its now disabled",
   "chloride.zoom.max.title": "Max Zoom",
-  "chloride.zoom.max.desc": "Sets maximum zoom possible using mouse wheel"
+  "chloride.zoom.max.desc": "Sets maximum zoom possible using mouse wheel",
+  "chloride.zoom.smooth.title": "Smooth Animation",
+  "chloride.zoom.smooth.desc": "Eases zooming in and out, including mouse wheel adjustments"
 }
