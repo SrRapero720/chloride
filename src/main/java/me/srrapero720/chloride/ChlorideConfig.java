@@ -339,6 +339,7 @@ public class ChlorideConfig {
     @Comment("Zoom keybind")
     public static class ZoomConfig {
         @Spec.Field public boolean enabled = true;
+        @Spec.Field public boolean smooth = true;
         @Spec.Field @NumberConditions(minDouble = 1, maxDouble = 100) public double max = 50;
     }
 
