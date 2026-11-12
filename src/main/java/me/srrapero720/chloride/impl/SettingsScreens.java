@@ -5,6 +5,7 @@ import me.srrapero720.chloride.impl.sodium.salty.SaltyOptions;
 import me.srrapero720.chloride.impl.sodium.screens.ChlorideSettingsScreen;
 import me.srrapero720.chloride.impl.sodium.screens.PopuliSettingsScreen;
 import me.srrapero720.chloride.impl.sodium.screens.ReeseSettingsScreen;
+import me.srrapero720.chloride.impl.sodium.screens.VanillaSettingsScreen;
 import net.caffeinemc.mods.sodium.client.config.ConfigManager;
 import net.caffeinemc.mods.sodium.client.gui.VideoSettingsScreen;
 import net.minecraft.client.Minecraft;
@@ -42,13 +43,14 @@ public class SettingsScreens {
     }
 
     public enum Style {
-        SODIUM, CHLORIDE, TEXTRUE, POPULI;
+        SODIUM, CHLORIDE, VANILLA, TEXTRUE, POPULI;
 
         /** Creates this style's settings screen; {@code prev} is restored when it closes. */
         public Screen screen(final Screen prev) {
             return switch (this) {
                 case SODIUM -> VideoSettingsScreen.createScreen(prev);
                 case CHLORIDE -> new ChlorideSettingsScreen(prev);
+                case VANILLA -> new VanillaSettingsScreen(prev);
                 case TEXTRUE -> new ReeseSettingsScreen(prev);
                 case POPULI -> new PopuliSettingsScreen(prev);
             };

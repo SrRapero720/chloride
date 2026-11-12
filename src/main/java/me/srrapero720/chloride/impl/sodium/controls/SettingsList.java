@@ -8,14 +8,7 @@ import me.srrapero720.chloride.impl.sodium.screens.SaltySettingsScreen;
 import me.srrapero720.chloride.mixins.impl.sodium.OptionAccessor;
 import net.caffeinemc.mods.sodium.api.config.option.OptionImpact;
 import net.caffeinemc.mods.sodium.client.config.ConfigManager;
-import net.caffeinemc.mods.sodium.client.config.structure.BooleanOption;
-import net.caffeinemc.mods.sodium.client.config.structure.EnumOption;
-import net.caffeinemc.mods.sodium.client.config.structure.ExternalButtonOption;
-import net.caffeinemc.mods.sodium.client.config.structure.IntegerOption;
-import net.caffeinemc.mods.sodium.client.config.structure.ModOptions;
-import net.caffeinemc.mods.sodium.client.config.structure.Option;
-import net.caffeinemc.mods.sodium.client.config.structure.OptionGroup;
-import net.caffeinemc.mods.sodium.client.config.structure.Page;
+import net.caffeinemc.mods.sodium.client.config.structure.*;
 import net.caffeinemc.mods.sodium.client.gui.ColorTheme;
 import net.caffeinemc.mods.sodium.client.gui.Colors;
 import net.caffeinemc.mods.sodium.client.gui.Layout;
@@ -37,14 +30,7 @@ import net.neoforged.fml.ModList;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -52,7 +38,7 @@ import java.util.function.Function;
  * selected page or the hits of a search. Rows outside the viewport are skipped while rendering, so pages
  * with hundreds of entries (the per-particle toggles) cost the same as short ones.
  */
-public class SettingsList extends AbstractOptionList {
+public class SettingsList extends AbstractOptionList implements SettingsView {
     private static final Component CHEVRON = Component.literal(">");
     /** Barely there: the body box is only meant to tell the list apart from the screen behind it. */
     private static final int BODY_SHADE = 0x30000000;

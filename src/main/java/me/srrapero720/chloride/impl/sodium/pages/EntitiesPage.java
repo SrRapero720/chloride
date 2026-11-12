@@ -13,7 +13,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.*;
+import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.BLOCKS;
+import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.STORAGE;
 
 public class EntitiesPage {
     private EntitiesPage() {}

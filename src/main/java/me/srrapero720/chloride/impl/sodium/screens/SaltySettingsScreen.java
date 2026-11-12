@@ -2,25 +2,16 @@ package me.srrapero720.chloride.impl.sodium.screens;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import me.srrapero720.chloride.impl.SettingsScreens;
-import me.srrapero720.chloride.impl.sodium.controls.DropdownOverlay;
-import me.srrapero720.chloride.impl.sodium.controls.EnhancedSearchBar;
-import me.srrapero720.chloride.impl.sodium.controls.OptionRows;
-import me.srrapero720.chloride.impl.sodium.controls.SettingsList;
-import me.srrapero720.chloride.impl.sodium.controls.StyleSwitchButton;
-import me.srrapero720.chloride.impl.sodium.controls.TabButton;
+import me.srrapero720.chloride.impl.sodium.controls.*;
 import me.srrapero720.chloride.impl.sodium.salty.SaltyOptions;
 import net.caffeinemc.mods.sodium.client.config.ConfigManager;
-import net.caffeinemc.mods.sodium.client.config.structure.ExternalPage;
-import net.caffeinemc.mods.sodium.client.config.structure.ModOptions;
-import net.caffeinemc.mods.sodium.client.config.structure.Option;
-import net.caffeinemc.mods.sodium.client.config.structure.OptionGroup;
-import net.caffeinemc.mods.sodium.client.config.structure.Page;
+import net.caffeinemc.mods.sodium.client.config.structure.*;
 import net.caffeinemc.mods.sodium.client.gui.Colors;
 import net.caffeinemc.mods.sodium.client.gui.Dimensioned;
 import net.caffeinemc.mods.sodium.client.gui.Layout;
+import net.caffeinemc.mods.sodium.client.gui.options.control.ExternalButtonControl;
 import net.caffeinemc.mods.sodium.client.gui.widgets.FlatButtonWidget;
 import net.caffeinemc.mods.sodium.client.gui.widgets.KeyBoundButtonWidget;
-import net.caffeinemc.mods.sodium.client.gui.options.control.ExternalButtonControl;
 import net.caffeinemc.mods.sodium.client.util.Dim2i;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -31,12 +22,7 @@ import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.function.ToIntFunction;
 
 /**
@@ -63,7 +49,7 @@ public abstract class SaltySettingsScreen extends Screen implements Dimensioned 
     private Page page;
     private String query = "";
     private List<SearchHit> hits = List.of();
-    private SettingsList list;
+    private SettingsView list;
     private EnhancedSearchBar bar;
     private KeyBoundButtonWidget undo;
     private KeyBoundButtonWidget apply;
@@ -126,17 +112,15 @@ public abstract class SaltySettingsScreen extends Screen implements Dimensioned 
             // SEARCH AND STYLE-SPECIFIC NAVIGATION MAY CHANGE THE BODY GEOMETRY, SO RELAYOUT HAPPENS OUTSIDE ITS EVENT
             this.relayout = false;
             // THE BAR IS RECREATED BY THE RELAYOUT, SO THE FOCUS IS HANDED BACK AND TYPING KEEPS GOING
-            final boolean typing = this.bar != null && this.bar.typing();
+            final boolean typing = this.searchFocused();
             this.rebuildWidgets();
-            if (typing && this.bar != null) this.setFocused(this.bar);
+            if (typing) this.focusSearch();
         }
         // HIDE UI IS HELD DOWN: DRAW NOTHING AT ALL, NOT EVEN THE DIMMED BACKGROUND
         if (this.peeking) return;
 
         this.pending = this.hasPendingChanges();
-        if (this.apply != null) this.apply.setEnabled(this.pending);
-        if (this.undo != null) this.undo.setVisible(this.pending);
-        if (this.done != null) this.done.setEnabled(!this.pending);
+        this.updateActionState(this.pending);
 
         this.renderBackgroundLayout(graphics, mouseX, mouseY, delta);
         super.render(graphics, mouseX, mouseY, delta);
@@ -161,7 +145,7 @@ public abstract class SaltySettingsScreen extends Screen implements Dimensioned 
             return true;
         }
         // THE BAR EATS ESCAPE WHILE IT HOLDS A QUERY, SO CLEARING THE SEARCH DOES NOT CLOSE THE SCREEN
-        return this.bar != null && this.bar.keyPressed(keyCode, scanCode, modifiers) || super.keyPressed(keyCode, scanCode, modifiers);
+        return this.handleSearchKey(keyCode, scanCode, modifiers) || super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
@@ -237,7 +221,7 @@ public abstract class SaltySettingsScreen extends Screen implements Dimensioned 
 
     @Nullable
     public final SettingsList settingsList() {
-        return this.list;
+        return this.list instanceof SettingsList value ? value : null;
     }
 
     @Nullable
@@ -330,7 +314,7 @@ public abstract class SaltySettingsScreen extends Screen implements Dimensioned 
     }
 
     // THE COMMON FRAME OWNS HEADER AND FOOTER PLACEMENT; STYLES ONLY RECEIVE THE SPACE BETWEEN THEM
-    private int addHeader() {
+    protected int addHeader() {
         final int x = this.getX();
         final int y = this.getY();
         this.addStyleSwitch(new Dim2i(x, y, Layout.BUTTON_SHORT, Layout.BUTTON_SHORT));
@@ -347,7 +331,7 @@ public abstract class SaltySettingsScreen extends Screen implements Dimensioned 
         this.bar = this.addRenderableWidget(new EnhancedSearchBar(dim, this.query, this::onQuery));
     }
 
-    private int addFooter() {
+    protected int addFooter() {
         final int footerY = this.getLimitY() - Layout.BUTTON_SHORT;
         final int step = Layout.BUTTON_LONG + Layout.INNER_MARGIN;
         final int doneX = this.getLimitX() - Layout.BUTTON_LONG;
@@ -374,7 +358,13 @@ public abstract class SaltySettingsScreen extends Screen implements Dimensioned 
     }
 
     protected final void addSettingsList(final Dim2i dim) {
-        this.list = this.addRenderableWidget(new SettingsList(this, dim));
+        final SettingsList list = this.addRenderableWidget(new SettingsList(this, dim));
+        this.setSettingsView(list);
+    }
+
+    /** Registers the option body used by a style after that body has been added as a screen widget. */
+    protected final void setSettingsView(final SettingsView view) {
+        this.list = view;
     }
 
     protected final void showPage(final ModOptions mod, final Page page) {
@@ -433,6 +423,11 @@ public abstract class SaltySettingsScreen extends Screen implements Dimensioned 
 
     protected final void requestRelayout() {
         this.relayout = true;
+    }
+
+    /** Hides the complete settings UI until the current mouse press is released. */
+    protected final void startPeek() {
+        this.peeking = true;
     }
 
     /** Packs mods in encounter order without allowing any row to exceed {@code width}. */
@@ -526,7 +521,7 @@ public abstract class SaltySettingsScreen extends Screen implements Dimensioned 
         return true;
     }
 
-    private void onQuery(final String query) {
+    protected final void onQuery(final String query) {
         if (query.equals(this.query)) return;
         this.query = query;
         this.hits = query.isBlank() ? List.of() : this.search(query);
@@ -543,6 +538,28 @@ public abstract class SaltySettingsScreen extends Screen implements Dimensioned 
         ConfigManager.CONFIG.resetAllOptionsFromBindings();
         SaltyOptions.undoAll();
         this.refresh();
+    }
+
+    /** Updates the default Sodium-like footer buttons. */
+    protected void updateActionState(final boolean pending) {
+        if (this.apply != null) this.apply.setEnabled(pending);
+        if (this.undo != null) this.undo.setVisible(pending);
+        if (this.done != null) this.done.setEnabled(!pending);
+    }
+
+    /** True while the active search control should regain focus after a relayout. */
+    protected boolean searchFocused() {
+        return this.bar != null && this.bar.typing();
+    }
+
+    /** Restores focus to the style's search control after its widgets are rebuilt. */
+    protected void focusSearch() {
+        if (this.bar != null) this.setFocused(this.bar);
+    }
+
+    /** Gives a style's search control first chance to consume a key. */
+    protected boolean handleSearchKey(final int keyCode, final int scanCode, final int modifiers) {
+        return this.bar != null && this.bar.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Nullable

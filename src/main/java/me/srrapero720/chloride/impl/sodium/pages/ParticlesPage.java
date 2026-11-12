@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.*;
+import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.STORAGE;
 
 public class ParticlesPage {
     private ParticlesPage() {}

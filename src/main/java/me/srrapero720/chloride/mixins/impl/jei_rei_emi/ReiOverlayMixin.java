@@ -11,7 +11,8 @@ import me.srrapero720.chloride.ChlorideConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = ScreenOverlayImpl.class, priority = 500, remap = false)

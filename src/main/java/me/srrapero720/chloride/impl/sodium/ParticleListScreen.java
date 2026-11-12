@@ -17,11 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.ModList;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class ParticleListScreen extends Screen {
     private final Screen parent;

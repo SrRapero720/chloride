@@ -3,16 +3,16 @@ package me.srrapero720.chloride.impl;
 import dev.ryanhcode.sable.companion.SableCompanion;
 import me.srrapero720.chloride.Chloride;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-//import org.valkyrienskies.mod.common.VSGameUtilsKt;
 
 import java.util.Comparator;
 import java.util.List;
+
+//import org.valkyrienskies.mod.common.VSGameUtilsKt;
 
 public class EntityCulling {
     public static final boolean VS_I = Chloride.installed("valkyrienskies");

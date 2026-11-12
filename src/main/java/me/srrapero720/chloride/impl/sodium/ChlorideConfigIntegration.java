@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static me.srrapero720.chloride.Chloride.LOGGER;
-import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.STORAGE;
 import static me.srrapero720.chloride.Chloride.id;
+import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.STORAGE;
 
 @ConfigEntryPointForge("chloride")
 public class ChlorideConfigIntegration implements ConfigEntryPoint {

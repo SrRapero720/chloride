@@ -160,7 +160,7 @@ public class ChlorideConfig {
         @Spec.Field public boolean fastLanguageReload = true;
 
         @Spec.Field
-        @Comment("Settings screen style; TEXTRUE and POPULI are WIP and only open on dev environments")
+        @Comment("Settings screen style")
         public SettingsScreens.Style settingsScreen = SettingsScreens.Style.CHLORIDE;
 
         @Spec.Field

@@ -21,10 +21,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.PERCENT;
-import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.STORAGE;
-import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.VANILLA_STORAGE;
 import static me.srrapero720.chloride.Chloride.id;
+import static me.srrapero720.chloride.impl.sodium.SodiumFeatures.*;
 
 /**
  * Injects Chloride's additive toggles directly into Sodium's own option pages. The public config API can replace or

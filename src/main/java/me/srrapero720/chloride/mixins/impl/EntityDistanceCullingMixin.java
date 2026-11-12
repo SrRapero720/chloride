@@ -5,7 +5,6 @@ import me.srrapero720.chloride.ChlorideConfig;
 import me.srrapero720.chloride.api.IRenderableEntity;
 import me.srrapero720.chloride.impl.EntityCulling;
 import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -30,7 +29,9 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static me.srrapero720.chloride.Chloride.LOGGER;
 

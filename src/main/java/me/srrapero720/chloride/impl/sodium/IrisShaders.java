@@ -2,8 +2,8 @@ package me.srrapero720.chloride.impl.sodium;
 
 import me.srrapero720.chloride.Chloride;
 import me.srrapero720.chloride.api.config.SaltyConfigBuilder;
-import me.srrapero720.chloride.mixins.impl.iris.ShaderPackScreenAccessor;
 import me.srrapero720.chloride.api.config.StringListOptionBuilder;
+import me.srrapero720.chloride.mixins.impl.iris.ShaderPackScreenAccessor;
 import net.caffeinemc.mods.sodium.api.config.ConfigState;
 import net.caffeinemc.mods.sodium.api.config.StorageEventHandler;
 import net.caffeinemc.mods.sodium.api.config.structure.ConfigBuilder;
