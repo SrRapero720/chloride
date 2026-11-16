@@ -42,6 +42,14 @@ public class ZoomPage {
                         .setDefaultValue(50)
                         .setBinding(v -> ChlorideConfig.zoom.max = (double) v,
                                 () -> Math.toIntExact(Math.round(ChlorideConfig.zoom.max))))
+                .addOption(b.createBooleanOption(Chloride.id("smoothZoom"))
+                        .setName(Component.translatable("chloride.zoom.smooth.title"))
+                        .setTooltip(Component.translatable("chloride.zoom.smooth.desc"))
+                        .setStorageHandler(STORAGE)
+                        .setImpact(OptionImpact.LOW)
+                        .setEnabled(Zoom.canUseZoom())
+                        .setDefaultValue(true)
+                        .setBinding(v -> ChlorideConfig.zoom.smooth = v, () -> ChlorideConfig.zoom.smooth))
         );
 
         return page;

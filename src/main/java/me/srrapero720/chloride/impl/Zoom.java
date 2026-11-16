@@ -21,8 +21,11 @@ import org.lwjgl.glfw.GLFW;
 public class Zoom {
     private static final double EASE_DELTA = 0.15;
     private static final double DEFAULT = 3;
+    private static final double SMOOTH_RATE = Math.log(2.0) * 20.0;
 
     private static double value = -1;
+    private static double shown = 1;
+    private static long lastNanos;
     private static double mouseSensitivity = -1;
     private static final String[] ZOOM_MODS = {
             "justzoom",
@@ -50,7 +53,11 @@ public class Zoom {
                 mouseSensitivity = -1;
             }
 
-            return fov;
+            if (!ChlorideConfig.zoom.smooth) {
+                shown = 1;
+                return fov;
+            }
+            return fov / ease(1.0);
         }
 
         if (mouseSensitivity == -1)
@@ -59,7 +66,23 @@ public class Zoom {
         // ZOOM VALUE AFFECTS MOUSE SENSITIVITY
         mouseSetting.set(mouseSensitivity * (1.0 / value));
 
-        return fov / value;
+        if (!ChlorideConfig.zoom.smooth) {
+            shown = value;
+            return fov / value;
+        }
+        return fov / ease(value);
+    }
+
+    private static double ease(final double target) {
+        final long now = System.nanoTime();
+        final long last = lastNanos;
+        lastNanos = now;
+        if (last == 0L) return shown = target;
+        final double dt = (now - last) / 1.0E9;
+        if (dt <= 0.0) return shown;
+        if (dt > 0.5) return shown = target;
+        shown += (target - shown) * -Math.expm1(-dt * SMOOTH_RATE);
+        return shown;
     }
 
     public static boolean scroll(final double amount) {

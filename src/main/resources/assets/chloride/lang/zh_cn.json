@@ -163,5 +163,7 @@
   "chloride.zoom.desc": "启用缩放功能，可按下绑定的键位激活。",
   "chloride.zoom.forbidden": "检测到JustZoom或Zume，Chloride缩放现已禁用。",
   "chloride.zoom.max.title": "最大缩放程度",
-  "chloride.zoom.max.desc": "使用鼠标滚轮设置可能的最大缩放程度。"
+  "chloride.zoom.max.desc": "使用鼠标滚轮设置可能的最大缩放程度。",
+  "chloride.zoom.smooth.title": "平滑动画",
+  "chloride.zoom.smooth.desc": "缩放与滚轮调节时使用平滑的过渡动画。"
 }
